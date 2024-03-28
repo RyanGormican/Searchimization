@@ -9,6 +9,7 @@ const [foundWords, setFoundWords] = useState(0);
     const [selectedLetters, setSelectedLetters] = useState([]);
       const [isMouseDown, setIsMouseDown] = useState(false);
 
+        const [foundIndexes, setFoundIndexes] = useState([]);
 
   const [gridContent, setGridContent] = useState([
     { letter: 'R', group: 1, position: 1, index:0, found: false },
@@ -60,16 +61,11 @@ const [foundWords, setFoundWords] = useState(0);
     { letter: 'D', group:8, position: 3 ,index:46, found: false},
     { letter: 'W', group: 8, position: 4 ,index:47, found: false},
   ]);
-  const [forceUpdateGrid, setForceUpdateGrid] = useState(false);
-    const maxGroup = gridContent.reduce((max, { group }) => {
+   const maxGroup = gridContent.reduce((max, { group }) => {
     return group > max ? group : max;
   }, 0);
- const handleMouseDown = (index) => {
-    setIsMouseDown(true);
-    if (!selectedLetters.includes(index)) {
-      setSelectedLetters([...selectedLetters, index]);
-    }
-  };
+
+
 
   const resetSelect = () => {
     setSelectedLetters([]);
@@ -79,53 +75,76 @@ const [foundWords, setFoundWords] = useState(0);
     setIsMouseDown(false);
   };
 
-  const handleMouseEnter = (index) => {
-    if (isMouseDown) {
-      if (!selectedLetters.includes(index)) {
-        setSelectedLetters([...selectedLetters, index]);
-      }
-    }
-  };
+
+
+
 
 const submitWord = () => {
   const selectedWordIndexes = [...selectedLetters];
-  const selectedWordLetters = selectedWordIndexes.map(
-    (index) => gridContent[index].letter
-  );
 
   for (let i = 0; i < gridContent.length; i++) {
     const wordGroup = [];
     let j = i;
-    while (j < gridContent.length && gridContent[j].group === gridContent[i].group) {
+    while (
+      j < gridContent.length &&
+      gridContent[j].group === gridContent[i].group
+    ) {
       wordGroup.push(gridContent[j]);
       j++;
     }
 
-   
-    if (selectedWordIndexes.length === wordGroup.length) {
-      const isMatch = selectedWordIndexes.every((index, idx) => {
-        return gridContent[index].position === wordGroup[idx].position;
+    const sortedSelectedIndexes = selectedWordIndexes.sort((a, b) => {
+      return gridContent[a].position - gridContent[b].position;
+    });
+
+    const groupIndexes = {};
+    gridContent.forEach(({ group, index, position }) => {
+      if (!groupIndexes[group]) {
+        groupIndexes[group] = [];
+      }
+      groupIndexes[group].push(index);
+    });
+
+    
+    for (const group in groupIndexes) {
+      groupIndexes[group].sort((a, b) => {
+        const posA = gridContent.find(item => item.index === a).position;
+        const posB = gridContent.find(item => item.index === b).position;
+        return posA - posB;
       });
+    }
 
-      if (isMatch) {
-        const foundWordIndexes = wordGroup.map((item) => item.index);
-        const newGridContent = gridContent.map((item) => {
-          if (foundWordIndexes.includes(item.index)) {
-            return { ...item, found: true };
-          }
-          return item;
-        });
+    
+    for (const group in groupIndexes) {
+      const groupIndex = groupIndexes[group];
+      console.log(groupIndex);
+    if (
+  selectedWordIndexes.length === groupIndex.length &&
+  JSON.stringify(sortedSelectedIndexes) === JSON.stringify(groupIndex) &&
+  !wordGroup.some((item) => item.found) &&
+  !selectedWordIndexes.some((index) => foundIndexes.includes(index))
+) {
+ 
+   const foundWordIndexes = selectedWordIndexes.map((index) => gridContent[index].index);
 
-        setGridContent(newGridContent);
+        setFoundIndexes([...foundIndexes, ...foundWordIndexes]);
         setFoundWords(foundWords + 1);
         setSelectedLetters([]);
-
-        break;
+        return; 
       }
     }
   }
-      setSelectedLetters([]);
+  setSelectedLetters([]);
+
 };
+
+
+const handleClick = (index) => {
+  if (!selectedLetters.includes(index)) {
+    setSelectedLetters([...selectedLetters, index]);
+  }
+};
+
 
 
 
@@ -133,38 +152,41 @@ const submitWord = () => {
     <main className="flex min-h-screen items-center p-24 flex-col">
       <div className="text-3xl font-bold mb-8">Strandimization</div>
       <div className="flex flex-col mb-8">
-        <div className="font-bold mb-4 bg-blue-400">Your Theme
-        <p>
-           {theme}
-        </p>
+        <div className="font-bold mb-4 bg-blue-400">Your Theme</div>
+        <div>
+        {theme}
         </div>
         <div>
           {foundWords} of {maxGroup} theme words found
         </div>
 
-        {selectedLetters.length>0 && (
-                <div>
- {selectedLetters.map((index) => (
-  <span key={index} className={ gridContent[index].found ? "bg-blue-200" : ""}>
-    {gridContent[index] && gridContent[index].letter}
-  </span>
-))}
-<div>
-        <button 
-  className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
-  onClick={submitWord}
->
-  Submit
-</button>
-<button 
-  className="text-l font-bold mb-8 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
-  onClick={resetSelect}
->
-  Reset
-</button>
-</div>
-        </div>
-
+        {selectedLetters.length > 0 && (
+          <div>
+            {selectedLetters.map((index) => (
+              <span
+                key={index}
+                className={
+                  foundIndexes.includes(index) ? "bg-blue-200" : ""
+                }
+              >
+                {gridContent[index].letter}
+              </span>
+            ))}
+            <div>
+            <button
+              className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
+              onClick={submitWord}
+            >
+              Submit
+            </button>
+            <button
+              className="text-l font-bold mb-8 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
+              onClick={resetSelect}
+            >
+              Reset
+            </button>
+            </div>
+          </div>
         )}
       </div>
       <div
@@ -178,13 +200,16 @@ const submitWord = () => {
             className={`bg-gray-200 p-4 flex flex-col justify-center items-center ${
               selectedLetters.includes(index) ? "bg-gray-500" : ""
             }`}
-            onMouseDown={() => handleMouseDown(index)}
-            onMouseEnter={() => handleMouseEnter(index)}
+          onClick={() => handleClick(index)}
           >
-            <div>{letter}</div>
+            <div
+              className={foundIndexes.includes(index) ? "bg-blue-200" : ""}
+            >
+              {letter}
+            </div>
           </div>
         ))}
       </div>
     </main>
   );
-}
+  }
