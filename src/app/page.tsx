@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function Home() {
 const theme = "Nature's Beauty";
+const [foundWords, setFoundWords] = useState(0);
   const [gridContent, setGridContent] = useState([
     { letter: 'R', group: 1, position: 1 },
     { letter: 'O', group: 1, position: 2 },
@@ -53,6 +54,9 @@ const theme = "Nature's Beauty";
     { letter: 'D', group:8, position: 3 },
     { letter: 'W', group: 8, position: 4 },
   ]);
+    const maxGroup = gridContent.reduce((max, { group }) => {
+    return group > max ? group : max;
+  }, 0);
 
   return (
     <main className="flex min-h-screen items-center p-24 flex-col">
@@ -62,6 +66,7 @@ const theme = "Nature's Beauty";
       <div className="flex flex-col mb-8">
         <div className="font-bold mb-4">Your Theme</div>
         <div>{theme}</div>
+        <div>{foundWords} of {maxGroup}   theme words found  </div>
       </div>
       <div className="grid grid-cols-6 grid-rows-8 gap-4">
         {gridContent.map(({ letter, group, position }, index) => (
