@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '/src/app/globals.css';
 const Create = () => {
   return (
     <div>

@@ -1,4 +1,4 @@
-export const gridContent = [
+export const gridList = [
     {theme: 'Nature\'s Beauty', id: 1},
 ];
 export const gridContentData1 = [
@@ -50,6 +50,4 @@ export const gridContentData1 = [
     { letter: 'U', group:8, position: 2,index:45, found: false },
     { letter: 'D', group:8, position: 3 ,index:46, found: false},
     { letter: 'W', group: 8, position: 4 ,index:47, found: false},
-  ]
-
-  export default gridContentData;
+  ];

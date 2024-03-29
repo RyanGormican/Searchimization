@@ -1,10 +1,13 @@
 'use client'
 import { useState, useRef ,useEffect} from "react";
-import gridContentData from './gridContentData'
+import { gridList, gridContentData1 } from '/src/app/gridContentData';
 import Link from 'next/link';
-
-const Puzzles = () => {
-const theme = "Nature's Beauty";
+import { useRouter } from 'next/router';
+import '/src/app/globals.css';
+const Play = () => {
+ const router = useRouter();
+  const { id } = router.query;
+  const theme = gridList.find(item => item.id === parseInt(id));
 const [foundWords, setFoundWords] = useState(0);
   const gridRef = useRef(null);
     const [selectedLetters, setSelectedLetters] = useState([]);
@@ -12,7 +15,7 @@ const [foundWords, setFoundWords] = useState(0);
 
         const [foundIndexes, setFoundIndexes] = useState([]);
 
-  const [gridContent, setGridContent] = useState(gridContentData);
+  const [gridContent, setGridContent] = useState(gridContentData1);
    const maxGroup = gridContent?.reduce((max, { group }) => {
     return group > max ? group : max;
   }, 0);
@@ -112,7 +115,7 @@ const handleClick = (index) => {
       <div className="flex flex-col mb-8">
         <div className="font-bold mb-4 bg-blue-400">Your Theme</div>
         <div>
-        {theme}
+        {theme  && theme.theme}
         </div>
         <div>
           {foundWords} of {maxGroup} theme words found
@@ -171,7 +174,7 @@ const handleClick = (index) => {
       </div>
     </main>
   );
-  }
+  
 }
 
-export default Puzzles;
+export default Play;
