@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef ,useEffect} from "react";
 import gridContentData from './gridContentData'
+import Link from 'next/link';
 
 export default function Home() {
 const theme = "Nature's Beauty";
@@ -96,8 +97,26 @@ const handleClick = (index) => {
 
 
   return (
-    <main className="flex min-h-screen items-center p-24 flex-col">
-      <div className="text-3xl font-bold mb-8">Strandimization</div>
+    <main className="flex min-h-screen items-center p-12 flex-col">
+ 
+      <div className="text-3xl font-bold mb-4">Strandimization</div>
+          <div className="flex">
+
+      <div>
+        <button
+          className="py-2 px-4 bg-blue-500 text-white rounded"
+        >
+          PUZZLES
+        </button>
+      </div>
+       <div>
+        <button
+          className="py-2 px-4 bg-blue-500 text-white rounded"
+        >
+          CREATE
+        </button>
+      </div>
+    </div>
       <div className="flex flex-col mb-8">
         <div className="font-bold mb-4 bg-blue-400">Your Theme</div>
         <div>
@@ -106,7 +125,7 @@ const handleClick = (index) => {
         <div>
           {foundWords} of {maxGroup} theme words found
         </div>
-
+         <div  style={{ minHeight:"50px",maxHeight: "50px" }}>
         {selectedLetters.length > 0 && (
           <div>
             {selectedLetters.map((index) => (
@@ -135,6 +154,7 @@ const handleClick = (index) => {
             </div>
           </div>
         )}
+        </div>
       </div>
       <div
         ref={gridRef}
