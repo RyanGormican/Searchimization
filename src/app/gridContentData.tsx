@@ -1,5 +1,5 @@
 export const gridList = [
-    {theme: 'Nature\'s Beauty', id: 1},
+    {theme: 'Nature\'s Beauty', id: 1,user:'RyanG',likes:1,plays:5,finishes:2,},
 ];
 export const gridContentData1 = [
     { letter: 'R', group: 1, position: 1, index:0, found: false },
