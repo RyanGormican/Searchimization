@@ -3,7 +3,7 @@ import { useState, useRef ,useEffect} from "react";
 import gridContentData from './gridContentData'
 import Link from 'next/link';
 
-export default function Home() {
+const Puzzles = () => {
 const theme = "Nature's Beauty";
 const [foundWords, setFoundWords] = useState(0);
   const gridRef = useRef(null);
@@ -92,10 +92,6 @@ const handleClick = (index) => {
     setSelectedLetters([...selectedLetters, index]);
   }
 };
-
-
-
-
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
  
@@ -176,3 +172,6 @@ const handleClick = (index) => {
     </main>
   );
   }
+}
+
+export default Puzzles;

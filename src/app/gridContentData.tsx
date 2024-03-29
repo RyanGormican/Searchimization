@@ -1,4 +1,7 @@
-export const gridContentData = [
+export const gridContent = [
+    {theme: 'Nature\'s Beauty', id: 1},
+];
+export const gridContentData1 = [
     { letter: 'R', group: 1, position: 1, index:0, found: false },
     { letter: 'O', group: 1, position: 2,index:1, found: false },
     { letter: 'S', group: 1, position: 3,index:2, found: false },
