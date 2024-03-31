@@ -7,6 +7,9 @@ const Create = () => {
   const gridRef = useRef(null);
   const [gridContent, setGridContent] = useState([]);
   const [groupings, setGroupings] = useState([]);
+const [editingIndex, setEditingIndex] = useState(null);
+const [selectedGroup, setSelectedGroup] = useState(null);
+
   const initializeGridContent = () => {
    const newGridContent = Array.from({ length: 48 }, (_, index) => ({
       letter: 'A',
@@ -18,26 +21,62 @@ const Create = () => {
     setGridContent(newGridContent);
   };
 
-  
-  const calculateGroupings = () => {
-    const groups = {};
-    gridContent.forEach(({ letter, group }) => {
-      if (!groups[group]) {
-        groups[group] = [];
-      }
-      groups[group].push(letter);
-    });
+ const calculateGroupings = () => {
+  const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
+  const groups = {};
 
-    const groupList = Object.entries(groups).map(([group, letters]) => ({
-      group: parseInt(group),
-      letters: letters.sort().join(''),
-    }));
+  sortedGridContent.forEach(({ letter, group }) => {
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(letter);
+  });
 
-    setGroupings(groupList);
-  };
+  const groupList = Object.entries(groups).map(([group, letters]) => ({
+    group: parseInt(group),
+    letters: letters.join(''),
+  }));
 
-  const handleClick = (index) => {
-  };
+  setGroupings(groupList);
+};
+
+const handleClick = (index) => {
+console.log(selectedGroup);
+  if (selectedGroup === null) {
+  setEditingIndex(index);
+  }
+};
+const handleInputChange = (index, newLetter) => {
+
+if (newLetter.trim() === '') {
+    return;
+  }
+  setGridContent((prevGridContent) => {
+    const newGridContent = [...prevGridContent];
+    newGridContent[index].letter = newLetter.toUpperCase();
+    return newGridContent;
+  });
+};
+
+const handleInputBlur = (index) => {
+  setEditingIndex(null);
+};
+
+const handleAddGroup = () => {
+  const maxGroup = Math.max(...groupings.map(({ group }) => group));
+  const newGroup = maxGroup + 1;
+  setGroupings(prevGroupings => [
+    ...prevGroupings,
+    { group: newGroup, letters: '' }
+  ]);
+};
+const handleGroupClick = (index) => {
+  if (selectedGroup === index) {
+    setSelectedGroup(null);
+  } else {
+    setSelectedGroup(index);
+  }
+};
 
   useEffect(() => {
     initializeGridContent();
@@ -73,11 +112,32 @@ const Create = () => {
       </div>
       <div className="flex mt-4">
         <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4">
-          {gridContent.map(({ letter, group, position, index }) => (
-            <div key={index} onClick={() => handleClick(index)}>
-              <div>{letter}</div>
-            </div>
-          ))}
+      {gridContent.map(({ letter, group, position, index }) => (
+  <div key={index} onClick={() => handleClick(index)}>
+    {editingIndex === index ? (
+      <input
+        type="text"
+        value={letter}
+        maxLength={1}
+        onChange={(e) => handleInputChange(index, e.target.value)}
+        onBlur={() => handleInputBlur(index)}
+        style={{ textTransform: 'uppercase' }} 
+        pattern="[A-Z]" 
+        onKeyPress={(e) => {
+          const charCode = e.charCode;
+          if (charCode < 65 || charCode > 90) {
+            e.preventDefault();
+          }
+        }}
+      />
+    ) : (
+      <div>{letter}</div>
+    )}
+  </div>
+))}
+
+
+
         </div>
           </div>
         <div className="ml-4">
@@ -89,14 +149,23 @@ const Create = () => {
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light" style={{border:'1px solid black'}}>
-              {groupings.map(({ group, letters }) => (
-                <tr key={group} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-3 px-6 text-left whitespace-nowrap" style={{border:'1px solid black'}}>{group}</td>
-                  <td className="py-3 px-6 text-left">{letters}</td>
-                </tr>
-              ))}
+             {groupings.map(({ group, letters }, index) => (
+  <tr
+    key={group}
+    className={selectedGroup === index ? 'selected-group' : 'group'}
+    onClick={() => handleGroupClick(index)}
+  >
+    <td className="py-3 px-6 text-left whitespace-nowrap"   className={selectedGroup === index ? 'selected-group' : 'group'}>{group}</td>
+    <td className="py-3 px-6 text-left"   className={selectedGroup === index ? 'selected-group' : 'group'}>{letters}</td>
+  </tr>
+))}
+
             </tbody>
+            
           </table>
+            <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
+        Add Group
+      </button>
         </div>
     </main>
   );

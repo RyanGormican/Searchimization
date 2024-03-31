@@ -40,3 +40,10 @@ body {
   z-index:5;
 
 }
+.selected-group {
+  border: 2px solid blue;
+}
+.group
+{
+    border: 1px solid black;
+}
