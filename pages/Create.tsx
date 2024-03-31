@@ -7,7 +7,25 @@ const Create = () => {
  const gridRef = useRef(null);
  const [gridContent, setGridContent] = useState([]);
  const [grouping, setGrouping] = useState(1);
+ const handleClick = (index) => {
 
+  };
+   const initializeGridContent = () => {
+    const newGridContent = [];
+    for (let i = 0; i < 48; i++) {
+      newGridContent.push({
+        letter: 'A',
+        group: 1,
+        position: 1,
+        index: i,
+        found: false
+      });
+    }
+    setGridContent(newGridContent);
+  };
+ useEffect(() => {
+    initializeGridContent();
+  }, []);
   return (
    <main className="flex min-h-screen items-center p-12 flex-col">
       <div className="text-3xl font-bold mb-4">Strandimization</div>
