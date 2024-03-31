@@ -31,6 +31,7 @@ const Puzzles = () => {
             <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
           </Link>
         </div>
+
         </div>
       <div className="grid grid-cols-3 gap-4">
         {gridList.map((theme) => (
