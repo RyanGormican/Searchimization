@@ -135,7 +135,9 @@ const Create = () => {
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
+        <Link href="/">
       <div className="text-3xl font-bold mb-4">Searchimization</div>
+      </Link>
       <div className="links">
         <a href="https://www.linkedin.com/in/ryangormican/">
           <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
