@@ -1,3 +1,4 @@
+'use client'
 import '/src/app/globals.css';
 import { useState, useRef, useEffect } from "react";
 import { Icon } from '@iconify/react';
