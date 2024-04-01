@@ -48,7 +48,6 @@ const Play = () => {
 const gridContentData = puzzleContentDoc.data()?.gridContent as GridItem[]; 
 setGridContent(gridContentData);
 
-
       } catch (error) {
         console.error('Error fetching puzzle data:', error);
       }
