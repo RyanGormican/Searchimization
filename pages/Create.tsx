@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 const Create = () => {
   const gridRef = useRef(null);
-  const [gridContent, setGridContent] = useState([]);
+  const [gridContent, setGridContent] = useState<{ letter: string; group: number; position: number; index: number; found: boolean; }[]>([]);
   const [name, setName] = useState('My Puzzle');
   const [groupings, setGroupings] = useState([]);
   const [groupColors, setGroupColors] = useState([]); 
