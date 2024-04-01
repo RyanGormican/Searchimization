@@ -17,11 +17,11 @@ const Create = () => {
   const gridRef = useRef(null);
   const [gridContent, setGridContent] = useState<{ letter: string; group: number; position: number; index: number; found: boolean; }[]>([]);
   const [name, setName] = useState('My Puzzle');
-  const [groupings, setGroupings] = useState([]);
-  const [groupColors, setGroupColors] = useState([]); 
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [selectedLetters, setSelectedLetters] = useState([]);
+const [groupings, setGroupings] = useState<{ group: number; letters: string }[]>([]);
+ const [groupColors, setGroupColors] = useState<string[]>([]);
+const [editingIndex, setEditingIndex] = useState<number | null>(null);
+ const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
+ const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
    const router = useRouter();
   const initializeGridContent = () => {
     const newGridContent = Array.from({ length: 48 }, (_, index) => ({
@@ -39,7 +39,8 @@ const Create = () => {
   const user=auth.currentUser;
   const calculateGroupings = () => {
     const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
-    const groups = {};
+   const groups: { [key: number]: string[] } = {};
+
     sortedGridContent.forEach(({ letter, group }) => {
       if (!groups[group]) {
         groups[group] = [];
@@ -55,7 +56,7 @@ const Create = () => {
     setGroupings(groupList);
   };
 
-  const handleClick = (index) => {
+  const handleClick = (index: number) => {
     if (selectedGroup === null) {
       setEditingIndex(index);
     } else {
@@ -66,7 +67,7 @@ const Create = () => {
   };
   
  
-  const handleInputChange = (index, newLetter) => {
+ const handleInputChange = (index: number, newLetter: string) => {
     if (newLetter.trim() === '') {
       return;
     }
@@ -77,7 +78,7 @@ const Create = () => {
     });
   };
 
-  const handleInputBlur = (index) => {
+const handleInputBlur = (index: number) => {
     setEditingIndex(null);
   };
 
