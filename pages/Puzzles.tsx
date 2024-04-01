@@ -4,8 +4,18 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, firestore } from '../src/app/firebase';
-const Puzzles = () => {
-  const [puzzleList, setPuzzleList] = useState([]);
+
+interface Puzzle {
+  id: string;
+  theme: string;
+  plays: number;
+  likes: number;
+  finishes: number;
+  userName: string;
+}
+
+const Puzzles: React.FC = () => {
+  const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
 
   useEffect(() => {
     const fetchPuzzles = async () => {
@@ -14,7 +24,7 @@ const Puzzles = () => {
         const puzzles = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
-        }));
+        })) as Puzzle[];
         setPuzzleList(puzzles);
       } catch (error) {
         console.error('Error fetching puzzles:', error);
