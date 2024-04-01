@@ -156,7 +156,7 @@ const handleInputBlur = (index: number) => {
       const puzzleListRef = await  addDoc(collection(firestore, 'puzzleList'), {
         theme: name,
         userName: '',
-        user:auth.currentUser.uid, 
+        user: auth.currentUser ? auth.currentUser.uid : '',
         likes: 0,
         plays: 0,
         finishes: 0,
