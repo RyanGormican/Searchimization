@@ -53,7 +53,8 @@ const [editingIndex, setEditingIndex] = useState<number | null>(null);
       letters: letters.join(''),
     }));
 
-    setGroupings(groupList);
+setGroupings(groupList.map(group => ({ ...group, color: '#ADD8E6' })));
+
   };
 
   const handleClick = (index: number) => {
