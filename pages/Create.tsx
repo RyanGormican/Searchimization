@@ -2,7 +2,8 @@ import '/src/app/globals.css';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { auth ,firestore } from '/src/app/firebase'; 
+import { auth, firestore } from '../../src/app/firebase';
+
 import { signOut  } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import {
