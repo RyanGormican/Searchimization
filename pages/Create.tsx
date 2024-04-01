@@ -94,7 +94,7 @@ const handleInputBlur = (index: number) => {
     setGroupColors(prevColors => [...prevColors, '#ADD8E6']); 
   };
 
-  const handleGroupClick = (index) => {
+  const handleGroupClick = (index: number ) => {
     if (selectedGroup === index) {
       setSelectedGroup(null);
       setSelectedLetters([]);
