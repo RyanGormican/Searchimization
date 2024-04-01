@@ -53,7 +53,7 @@ const [editingIndex, setEditingIndex] = useState<number | null>(null);
       letters: letters.join(''),
     }));
 
-setGroupings(groupList.map(group => ({ ...group, color: '#ADD8E6' })));
+setGroupings(groupList.map(group => ({ ...group, color: '' })));
 
   };
 
@@ -86,10 +86,11 @@ const handleInputBlur = (index: number) => {
   const handleAddGroup = () => {
     const maxGroup = Math.max(...groupings.map(({ group }) => group));
     const newGroup = maxGroup + 1;
-    setGroupings(prevGroupings => [
-      ...prevGroupings,
-      { group: newGroup, letters: '' }
-    ]);
+ setGroupings(prevGroupings => [
+  ...prevGroupings.map(group => ({ ...group, color: '' })),
+  { group: newGroup, letters: '', color: '' }
+]);
+
 
 
     setGroupColors(prevColors => [...prevColors, '#ADD8E6']); 
