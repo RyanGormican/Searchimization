@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import { collection, doc, getDoc,updateDoc, increment } from 'firebase/firestore';
 import { auth, firestore } from '../../src/app/firebase';
 
+
+
 const Play = () => {
  const router = useRouter();
   const { id } = router.query;

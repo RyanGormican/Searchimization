@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef ,useEffect} from "react";
-import { auth } from "./firebase"; 
+import { auth, firestore } from './firebase';
+
 import { signInWithPopup, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
 
 import Link from 'next/link';

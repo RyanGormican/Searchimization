@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { collection, getDocs } from 'firebase/firestore';
-import { auth, firestore } from '../../src/app/firebase';
-
-
+import { auth, firestore } from '../src/app/firebase';
 const Puzzles = () => {
   const [puzzleList, setPuzzleList] = useState([]);
 
