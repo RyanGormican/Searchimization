@@ -289,7 +289,7 @@ const handleInputBlur = (index: number) => {
     className={selectedGroup === index ? 'selected-group' : 'group'}
     onClick={() => handleGroupClick(index)}
   >
-    <td className="py-3 px-6 text-left whitespace-nowrap"   className={selectedGroup === index ? 'selected-group' : 'group'}>{group}</td>
+<td className={`py-3 px-6 text-left whitespace-nowrap ${selectedGroup === index ? 'selected-group' : 'group'}`}>{group}</td>
      <td className="py-3 px-6 text-left">
       <input
         type="color"
