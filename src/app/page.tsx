@@ -2,7 +2,7 @@
 import { useState, useRef ,useEffect} from "react";
 import { auth, firestore } from './firebase';
 
-import { signInWithPopup, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
+import { signInWithPopup, User, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
 
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
