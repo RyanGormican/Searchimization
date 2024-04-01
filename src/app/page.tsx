@@ -9,7 +9,8 @@ import { Icon } from '@iconify/react';
 export default function Home() {
  const [error, setError] = useState("");
 
-   const [user,setUser] = useState(null);
+   const [user, setUser] = useState<User | null>(null);
+
    let googleProvider = new GoogleAuthProvider();
  
   const signInGoogle = () => {
