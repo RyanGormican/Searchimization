@@ -17,7 +17,7 @@ const Create = () => {
   const gridRef = useRef(null);
   const [gridContent, setGridContent] = useState<{ letter: string; group: number; position: number; index: number; found: boolean; }[]>([]);
   const [name, setName] = useState('My Puzzle');
-const [groupings, setGroupings] = useState<{ group: number; letters: string }[]>([]);
+const [groupings, setGroupings] = useState<{ group: number; letters: string;  color: string;  }[]>([]);
  const [groupColors, setGroupColors] = useState<string[]>([]);
 const [editingIndex, setEditingIndex] = useState<number | null>(null);
  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
