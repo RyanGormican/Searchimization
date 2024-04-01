@@ -43,9 +43,10 @@ const Play = () => {
           plays: increment(1)
         });
 
-      const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id as string));
-const gridContentData = puzzleContentDoc.exists ? (puzzleContentDoc.data()?.gridContent as GridItem[]) : [];
+     const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id as string));
+const gridContentData = puzzleContentDoc.data()?.gridContent as GridItem[]; 
 setGridContent(gridContentData);
+
 
       } catch (error) {
         console.error('Error fetching puzzle data:', error);
