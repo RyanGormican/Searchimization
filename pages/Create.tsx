@@ -143,7 +143,7 @@ const handleInputBlur = (index: number) => {
     setSelectedGroup(null);
   };
 
-  const handleColorChange = (groupIndex, newColor) => {
+  const handleColorChange = (groupIndex: number, newColor: string) => {
     setGroupColors((prevColors) => {
       const updatedColors = [...prevColors];
       updatedColors[groupIndex] = newColor;
