@@ -1,14 +1,14 @@
 'use client'
 import { useState, useRef ,useEffect} from "react";
 import { auth } from "./firebase"; 
-import { getAuth, signInWithPopup, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
 
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 export default function Home() {
  const [error, setError] = useState("");
 
-   const user = auth.currentUser;
+   const [user,setUser] = useState(null);
    let googleProvider = new GoogleAuthProvider();
  
   const signInGoogle = () => {
@@ -17,7 +17,17 @@ export default function Home() {
   const handleLogout = () => {
     signOut(auth);
   };
+   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
 
+    return () => unsubscribe();
+  }, []);
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
     <Link href="/">

@@ -2,7 +2,15 @@ import '/src/app/globals.css';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-
+import { auth ,firestore } from '/src/app/firebase'; 
+import { signOut  } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import {
+  collection,
+  addDoc,
+  setDoc,
+  doc,
+} from 'firebase/firestore';
 const Create = () => {
   const gridRef = useRef(null);
   const [gridContent, setGridContent] = useState([]);
@@ -12,7 +20,7 @@ const Create = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedLetters, setSelectedLetters] = useState([]);
-
+   const router = useRouter();
   const initializeGridContent = () => {
     const newGridContent = Array.from({ length: 48 }, (_, index) => ({
       letter: 'A',
@@ -23,7 +31,10 @@ const Create = () => {
     }));
     setGridContent(newGridContent);
   };
-
+   const handleLogout = () => {
+    signOut(auth);
+  };
+  const user=auth.currentUser;
   const calculateGroupings = () => {
     const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
     const groups = {};
@@ -51,7 +62,8 @@ const Create = () => {
       }
     }
   };
-
+  
+ 
   const handleInputChange = (index, newLetter) => {
     if (newLetter.trim() === '') {
       return;
@@ -88,9 +100,20 @@ const Create = () => {
       setSelectedLetters([]);
     }
   };
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+      } else {
 
+        router.push('/'); 
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
   useEffect(() => {
     initializeGridContent();
+
   }, []);
 
   useEffect(() => {
@@ -124,13 +147,29 @@ const Create = () => {
       return updatedColors;
     });
   };
-  const uploadPuzzle = () => {
-  const content = `Puzzle Name: ${name}\n\nGrid Content:\n${JSON.stringify(gridContent)}`;
-  const blob = new Blob([content], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.download = 'upload.txt';
-  link.click();
+  const uploadPuzzle = async () => {
+    try {
+     
+      const puzzleListRef = await  addDoc(collection(firestore, 'puzzleList'), {
+        theme: name,
+        userName: '',
+        user:auth.currentUser.uid, 
+        likes: 0,
+        plays: 0,
+        finishes: 0,
+        timecreated: new Date().toISOString(), 
+      });
+
+   
+      await setDoc(doc(firestore, 'puzzle', puzzleListRef.id), {
+        gridContent: gridContent,
+      });
+          router.push('/Puzzles'); 
+    } catch (error) {
+
+      console.error('Error uploading puzzle:', error);
+    }
+
   };
 
   return (
@@ -161,6 +200,12 @@ const Create = () => {
           </Link>
         </div>
       </div>
+       
+     <div className="logout">
+                <Icon  onClick={handleLogout}icon="material-symbols:logout" height="60" />
+            </div>
+   
+   
    <div>
   <input
     type="text"
