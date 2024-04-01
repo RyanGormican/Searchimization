@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { collection, doc, getDoc,updateDoc, increment } from 'firebase/firestore';
-import { firestore } from '/src/app/firebase';
+import { firestore } from '/src/app/firebase.tsx'; 
 const Play = () => {
  const router = useRouter();
   const { id } = router.query;
