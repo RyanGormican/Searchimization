@@ -1,15 +1,16 @@
 import '/src/app/globals.css';
 import { useState, useRef ,useEffect} from "react";
-import { gridList, gridContentData1 } from '/src/app/gridContentData';
 import { Icon } from '@iconify/react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
+import { collection, doc, getDoc,updateDoc, increment } from 'firebase/firestore';
+import { firestore } from '/src/app/firebase';
 const Play = () => {
  const router = useRouter();
   const { id } = router.query;
-  const theme = gridList.find(item => item.id === parseInt(id));
+  const [theme, setTheme] = useState(null);
+  const [gridContent, setGridContent] = useState([]);
 const [foundWords, setFoundWords] = useState(0);
   const gridRef = useRef(null);
     const [selectedLetters, setSelectedLetters] = useState([]);
@@ -17,12 +18,38 @@ const [foundWords, setFoundWords] = useState(0);
 
         const [foundIndexes, setFoundIndexes] = useState([]);
 
-  const [gridContent, setGridContent] = useState(gridContentData1);
+ 
    const maxGroup = gridContent?.reduce((max, { group }) => {
     return group > max ? group : max;
   }, 0);
 
+   useEffect(() => {
+    const fetchPuzzleData = async () => {
+      try {
+     
+       const puzzleDocRef = doc(firestore, 'puzzleList', id);
+        const puzzleDoc = await getDoc(puzzleDocRef);
+        const puzzleData = puzzleDoc.data();
+        setTheme(puzzleData);
+        
+        
+        await updateDoc(puzzleDocRef, {
+          plays: increment(1)
+        });
 
+      
+        const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id));
+        const gridContentData = puzzleContentDoc.data().gridContent;
+        setGridContent(gridContentData);
+      } catch (error) {
+        console.error('Error fetching puzzle data:', error);
+      }
+    };
+
+    if (id) {
+      fetchPuzzleData();
+    }
+  }, [id]);
 
   const resetSelect = () => {
     setSelectedLetters([]);
@@ -97,6 +124,21 @@ const handleClick = (index) => {
     setSelectedLetters([...selectedLetters, index]);
   }
 };
+useEffect(() => {
+  if (foundWords > 0 && foundWords === maxGroup) {
+    const incrementFinishes = async () => {
+      try {
+        const puzzleRef = doc(firestore, 'puzzleList', id);
+        await updateDoc(puzzleRef, {
+          finishes: increment(1)
+        });
+      } catch (error) {
+
+      }
+    };
+    incrementFinishes();
+  }
+}, [foundWords, maxGroup, id]);
   return (
  
     <main className="flex min-h-screen items-center p-12 flex-col">
