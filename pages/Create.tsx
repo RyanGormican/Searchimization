@@ -297,7 +297,8 @@ const handleInputBlur = (index: number) => {
         onChange={(e) => handleColorChange(index, e.target.value)}
       />
     </td>
-    <td className="py-3 px-6 text-left"   className={selectedGroup === index ? 'selected-group' : 'group'}>{letters}</td>
+<td className={`py-3 px-6 text-left ${selectedGroup === index ? 'selected-group' : 'group'}`}>{letters}</td>
+
   </tr>
 ))}
 
