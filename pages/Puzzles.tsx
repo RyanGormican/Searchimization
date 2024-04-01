@@ -1,10 +1,9 @@
-'use client'
-import '/src/app/globals.css';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, firestore } from '../src/app/firebase';
+import '/src/app/globals.css';
 
 interface Puzzle {
   id: string;
@@ -17,27 +16,66 @@ interface Puzzle {
 
 const Puzzles: React.FC = () => {
   const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
+  const [sortBy, setSortBy] = useState<string>('theme'); // Default sorting by theme
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
 
   useEffect(() => {
     const fetchPuzzles = async () => {
       try {
+        // Fetch puzzles from Firestore
         const querySnapshot = await getDocs(collection(firestore, 'puzzleList'));
+        // Map Firestore documents to Puzzle objects
         const puzzles = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
         })) as Puzzle[];
-        setPuzzleList(puzzles);
+
+        // Sort the puzzles array based on the selected sorting criteria
+        const sortedPuzzles = puzzles.sort((a, b) => {
+          if (sortBy === 'theme') {
+            return sortOrder === 'asc' ? a.theme.localeCompare(b.theme) : b.theme.localeCompare(a.theme);
+          } else if (sortBy === 'plays') {
+            return sortOrder === 'asc' ? a.plays - b.plays : b.plays - a.plays;
+          } else if (sortBy === 'likes') {
+            return sortOrder === 'asc' ? a.likes - b.likes : b.likes - a.likes;
+          } else if (sortBy === 'finishes') {
+            return sortOrder === 'asc' ? a.finishes - b.finishes : b.finishes - a.finishes;
+          } else if (sortBy === 'completionRatio') {
+            const completionRatioA = a.finishes / a.plays;
+            const completionRatioB = b.finishes / b.plays;
+            return sortOrder === 'asc' ? completionRatioA - completionRatioB : completionRatioB - completionRatioA;
+          } else if (sortBy === 'userName') {
+            return sortOrder === 'asc' ? a.userName.localeCompare(b.userName) : b.userName.localeCompare(a.userName);
+          }
+          return 0; // Default case
+        });
+
+        setPuzzleList(sortedPuzzles);
       } catch (error) {
         console.error('Error fetching puzzles:', error);
       }
     };
 
     fetchPuzzles();
-  }, []);
+  }, [sortBy, sortOrder]);
+
+  // Handler for changing the sorting criteria
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    if (value === sortBy) {
+      // Toggle sorting order if the same option is selected again
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(value);
+      setSortOrder('asc'); // Reset sorting order when changing the sorting criteria
+    }
+  };
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-      <div className="text-3xl font-bold mb-4">Searchimization</div>
+       <Link href="/">
+        <div className="text-3xl font-bold mb-4">Searchimization</div>
+      </Link>
       <div className="links">
         <a href="https://www.linkedin.com/in/ryangormican/">
           <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
@@ -61,7 +99,24 @@ const Puzzles: React.FC = () => {
           </Link>
         </div>
       </div>
+      <div className="flex items-center mt-4">
+        <label htmlFor="sortSelect" className="mr-2">Sort By:</label>
+        {/* Dropdown for selecting sorting criteria */}
+        <select id="sortSelect" value={sortBy} onChange={handleSortChange}>
+          <option value="theme">Theme Name</option>
+          <option value="plays">Plays</option>
+          <option value="likes">Likes</option>
+          <option value="finishes">Finishes</option>
+          <option value="completionRatio">Completion Ratio</option>
+          <option value="userName">Username</option>
+        </select>
+        {/* Button to toggle sorting order */}
+        <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
+          {sortOrder === 'asc' ? '^' : 'V'}
+        </button>
+      </div>
       <div className="grid grid-cols-3 gap-4">
+        {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
           <Link key={puzzle.id} href={`/Play/${puzzle.id}`}>
             <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">

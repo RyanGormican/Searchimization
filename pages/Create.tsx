@@ -4,26 +4,38 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { auth, firestore } from '../src/app/firebase';
-
-
-import { signOut  } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import {
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
+
 const Create = () => {
+  // Ref for the grid
   const gridRef = useRef(null);
+
+  // State for grid content
   const [gridContent, setGridContent] = useState<{ letter: string; group: number; position: number; index: number; found: boolean; }[]>([]);
+
+  // State for puzzle name
   const [name, setName] = useState('My Puzzle');
-const [groupings, setGroupings] = useState<{ group: number; letters: string;  color: string;  }[]>([]);
- const [groupColors, setGroupColors] = useState<string[]>([]);
-const [editingIndex, setEditingIndex] = useState<number | null>(null);
- const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
- const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
-   const router = useRouter();
+
+  // State for groupings
+  const [groupings, setGroupings] = useState<{ group: number; letters: string; color: string; }[]>([]);
+
+  // State for group colors
+  const [groupColors, setGroupColors] = useState<string[]>([]);
+
+  // State for currently editing index
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  // State for selected group
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
+
+  // State for selected letters
+  const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
+
+  const router = useRouter();
+
+  // Initialize grid content
   const initializeGridContent = () => {
     const newGridContent = Array.from({ length: 48 }, (_, index) => ({
       letter: 'A',
@@ -34,13 +46,19 @@ const [editingIndex, setEditingIndex] = useState<number | null>(null);
     }));
     setGridContent(newGridContent);
   };
-   const handleLogout = () => {
+
+  // Logout handler
+  const handleLogout = () => {
     signOut(auth);
   };
-  const user=auth.currentUser;
+
+  // Get current user
+  const user = auth.currentUser;
+
+  // Calculate groupings based on grid content
   const calculateGroupings = () => {
     const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
-   const groups: { [key: number]: string[] } = {};
+    const groups: { [key: number]: string[] } = {};
 
     sortedGridContent.forEach(({ letter, group }) => {
       if (!groups[group]) {
@@ -54,10 +72,10 @@ const [editingIndex, setEditingIndex] = useState<number | null>(null);
       letters: letters.join(''),
     }));
 
-setGroupings(groupList.map(group => ({ ...group, color: '' })));
-
+    setGroupings(groupList.map(group => ({ ...group, color: '' })));
   };
 
+  // Click handler for grid cells
   const handleClick = (index: number) => {
     if (selectedGroup === null) {
       setEditingIndex(index);
@@ -67,9 +85,9 @@ setGroupings(groupList.map(group => ({ ...group, color: '' })));
       }
     }
   };
-  
- 
- const handleInputChange = (index: number, newLetter: string) => {
+
+  // Input change handler for grid cells
+  const handleInputChange = (index: number, newLetter: string) => {
     if (newLetter.trim() === '') {
       return;
     }
@@ -80,24 +98,24 @@ setGroupings(groupList.map(group => ({ ...group, color: '' })));
     });
   };
 
-const handleInputBlur = (index: number) => {
+  // Blur handler for grid cells
+  const handleInputBlur = (index: number) => {
     setEditingIndex(null);
   };
 
+  // Add group handler
   const handleAddGroup = () => {
     const maxGroup = Math.max(...groupings.map(({ group }) => group));
     const newGroup = maxGroup + 1;
- setGroupings(prevGroupings => [
-  ...prevGroupings.map(group => ({ ...group, color: '' })),
-  { group: newGroup, letters: '', color: '' }
-]);
-
-
-
+    setGroupings(prevGroupings => [
+      ...prevGroupings.map(group => ({ ...group, color: '' })),
+      { group: newGroup, letters: '', color: '' }
+    ]);
     setGroupColors(prevColors => [...prevColors, '#ADD8E6']); 
   };
 
-  const handleGroupClick = (index: number ) => {
+  // Group click handler
+  const handleGroupClick = (index: number) => {
     if (selectedGroup === index) {
       setSelectedGroup(null);
       setSelectedLetters([]);
@@ -106,26 +124,29 @@ const handleInputBlur = (index: number) => {
       setSelectedLetters([]);
     }
   };
+
+  // Effect for checking authentication state
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
       } else {
-
         router.push('/'); 
       }
     });
-
     return () => unsubscribe();
   }, []);
+
+  // Initialize grid content
   useEffect(() => {
     initializeGridContent();
-
   }, []);
 
+  // Calculate groupings whenever grid content changes
   useEffect(() => {
     calculateGroupings();
   }, [gridContent]);
 
+  // Submit word handler
   const submitWord = () => {
     if (selectedLetters.length === 0 || selectedGroup === null) {
       return;
@@ -146,6 +167,7 @@ const handleInputBlur = (index: number) => {
     setSelectedGroup(null);
   };
 
+  // Color change handler for groups
   const handleColorChange = (groupIndex: number, newColor: string) => {
     setGroupColors((prevColors) => {
       const updatedColors = [...prevColors];
@@ -153,10 +175,11 @@ const handleInputBlur = (index: number) => {
       return updatedColors;
     });
   };
+
+  // Upload puzzle handler
   const uploadPuzzle = async () => {
     try {
-     
-      const puzzleListRef = await  addDoc(collection(firestore, 'puzzleList'), {
+      const puzzleListRef = await addDoc(collection(firestore, 'puzzleList'), {
         theme: name,
         userName: '',
         user: auth.currentUser ? auth.currentUser.uid : '',
@@ -166,22 +189,19 @@ const handleInputBlur = (index: number) => {
         timecreated: new Date().toISOString(), 
       });
 
-   
       await setDoc(doc(firestore, 'puzzle', puzzleListRef.id), {
         gridContent: gridContent,
       });
-          router.push('/Puzzles'); 
+      router.push('/Puzzles'); 
     } catch (error) {
-
       console.error('Error uploading puzzle:', error);
     }
-
   };
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-        <Link href="/">
-      <div className="text-3xl font-bold mb-4">Searchimization</div>
+      <Link href="/">
+        <div className="text-3xl font-bold mb-4">Searchimization</div>
       </Link>
       <div className="links">
         <a href="https://www.linkedin.com/in/ryangormican/">
@@ -206,113 +226,102 @@ const handleInputBlur = (index: number) => {
           </Link>
         </div>
       </div>
-       
-     <div className="logout">
-                <Icon  onClick={handleLogout}icon="material-symbols:logout" height="60" />
-            </div>
-   
-   
-   <div>
-  <input
-    type="text"
-    value={name}
-    onChange={(e) => setName(e.target.value)}
-  />
-</div>
-
-         <div  style={{ minHeight:"50px",maxHeight: "50px" }}>
+      <div className="logout">
+        <Icon  onClick={handleLogout} icon="material-symbols:logout" height="60" />
+      </div>
+      <div>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div  style={{ minHeight:"50px",maxHeight: "50px" }}>
         {selectedLetters.length > 0 && (
           <div>
             {selectedLetters.map((index) => (
-              <span
-                key={index}
-             
-              >
+              <span key={index}>
                 {gridContent[index].letter}
               </span>
             ))}
             <div>
-            <button
-              className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
-              onClick={submitWord}
-            >
-              Submit
-            </button>
-         
+              <button
+                className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out"
+                onClick={submitWord}
+              >
+                Submit
+              </button>
             </div>
           </div>
         )}
-        </div>
+      </div>
       <div className="flex mt-4">
-<div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4">
-  {gridContent.map(({ letter, group, position, index }) => (
-    <div
-      key={index}
-      onClick={() => handleClick(index)}
-      style={{ backgroundColor: groupColors[group - 1] }} // Set background color based on group
-    >
-      {editingIndex === index ? (
-        <input
-          type="text"
-          value={letter}
-          maxLength={1}
-          onChange={(e) => handleInputChange(index, e.target.value)}
-          onBlur={() => handleInputBlur(index)}
-          style={{ textTransform: 'uppercase' }}
-          pattern="[A-Z]"
-          onKeyPress={(e) => {
-            const charCode = e.charCode;
-            if (charCode < 65 || charCode > 90) {
-              e.preventDefault();
-            }
-          }}
-        />
-      ) : (
-        <div>{letter}</div>
-      )}
-    </div>
-  ))}
-</div>
-          </div>
-        <div className="ml-4">
-          <table className="min-w-max w-full table-auto">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal" style={{border:'1px solid black'}}>
-                <th className="py-3 px-6 text-left" style={{border:'1px solid black'}}>Group</th>
-                <th className="py-3 px-6 text-left"  style={{border:'1px solid black'}}>Color</th>
-                <th className="py-3 px-6 text-left"  style={{border:'1px solid black'}}>Word</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light" style={{border:'1px solid black'}}>
-             {groupings.map(({ group, letters,color  }, index) => (
-  <tr
-    key={group}
-    className={selectedGroup === index ? 'selected-group' : 'group'}
-    onClick={() => handleGroupClick(index)}
-  >
-<td className={`py-3 px-6 text-left whitespace-nowrap ${selectedGroup === index ? 'selected-group' : 'group'}`}>{group}</td>
-     <td className="py-3 px-6 text-left">
-      <input
-        type="color"
-        value={groupColors[index]}
-        onChange={(e) => handleColorChange(index, e.target.value)}
-      />
-    </td>
-<td className={`py-3 px-6 text-left ${selectedGroup === index ? 'selected-group' : 'group'}`}>{letters}</td>
-
-  </tr>
-))}
-
-            </tbody>
-            
-          </table>
-            <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
-        Add Group
-      </button>
-           <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={uploadPuzzle}>
-   Upload 
-      </button>
+        <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4">
+          {gridContent.map(({ letter, group, position, index }) => (
+            <div
+              key={index}
+              onClick={() => handleClick(index)}
+              style={{ backgroundColor: groupColors[group - 1] }} // Set background color based on group
+            >
+              {editingIndex === index ? (
+                <input
+                  type="text"
+                  value={letter}
+                  maxLength={1}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  onBlur={() => handleInputBlur(index)}
+                  style={{ textTransform: 'uppercase' }}
+                  pattern="[A-Z]"
+                  onKeyPress={(e) => {
+                    const charCode = e.charCode;
+                    if (charCode < 65 || charCode > 90) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              ) : (
+                <div>{letter}</div>
+              )}
+            </div>
+          ))}
         </div>
+      </div>
+      <div className="ml-4">
+        <table className="min-w-max w-full table-auto">
+          <thead>
+            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal" style={{border:'1px solid black'}}>
+              <th className="py-3 px-6 text-left" style={{border:'1px solid black'}}>Group</th>
+              <th className="py-3 px-6 text-left"  style={{border:'1px solid black'}}>Color</th>
+              <th className="py-3 px-6 text-left"  style={{border:'1px solid black'}}>Word</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-600 text-sm font-light" style={{border:'1px solid black'}}>
+            {groupings.map(({ group, letters,color  }, index) => (
+              <tr
+                key={group}
+                className={selectedGroup === index ? 'selected-group' : 'group'}
+                onClick={() => handleGroupClick(index)}
+              >
+                <td className={`py-3 px-6 text-left whitespace-nowrap ${selectedGroup === index ? 'selected-group' : 'group'}`}>{group}</td>
+                <td className="py-3 px-6 text-left">
+                  <input
+                    type="color"
+                    value={groupColors[index]}
+                    onChange={(e) => handleColorChange(index, e.target.value)}
+                  />
+                </td>
+                <td className={`py-3 px-6 text-left ${selectedGroup === index ? 'selected-group' : 'group'}`}>{letters}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
+          Add Group
+        </button>
+        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={uploadPuzzle}>
+          Upload 
+        </button>
+      </div>
     </main>
   );
 };

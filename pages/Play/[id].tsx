@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { collection, doc, getDoc, updateDoc, increment, DocumentData } from 'firebase/firestore';
 import { auth, firestore } from '../../src/app/firebase';
 
+// Interface for each grid item
 interface GridItem {
   letter: string;
   group: number;
@@ -15,6 +16,7 @@ interface GridItem {
   found: boolean;
 }
 
+// Interface for puzzle data
 interface PuzzleData {
   theme: string;
 }
@@ -22,12 +24,26 @@ interface PuzzleData {
 const Play = () => {
   const router = useRouter();
   const { id } = router.query;
+
+  // State for puzzle theme
   const [theme, setTheme] = useState<PuzzleData | null>(null);
+
+  // State for grid content
   const [gridContent, setGridContent] = useState<GridItem[]>([]);
+
+  // State for number of found words
   const [foundWords, setFoundWords] = useState<number>(0);
+
+  // Reference for the grid div
   const gridRef = useRef<HTMLDivElement>(null);
+
+  // State for selected letters
   const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
+
+  // State for mouse down event
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
+
+  // State for found indexes
   const [foundIndexes, setFoundIndexes] = useState<number[]>([]);
 
   useEffect(() => {
@@ -35,18 +51,21 @@ const Play = () => {
       try {
         if (!id) return;
 
+        // Fetch puzzle data from Firestore
         const puzzleDocRef = doc(firestore, 'puzzleList', id as string);
         const puzzleDoc = await getDoc(puzzleDocRef);
         const puzzleData = puzzleDoc.data() as PuzzleData;
         setTheme(puzzleData);
 
+        // Update plays count
         await updateDoc(puzzleDocRef, {
           plays: increment(1)
         });
 
-     const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id as string));
-const gridContentData = puzzleContentDoc.data()?.gridContent as GridItem[]; 
-setGridContent(gridContentData);
+        // Fetch grid content for the puzzle
+        const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id as string));
+        const gridContentData = puzzleContentDoc.data()?.gridContent as GridItem[]; 
+        setGridContent(gridContentData);
 
       } catch (error) {
         console.error('Error fetching puzzle data:', error);
@@ -56,18 +75,23 @@ setGridContent(gridContentData);
     fetchPuzzleData();
   }, [id]);
 
+  // Reset selected letters
   const resetSelect = () => {
     setSelectedLetters([]);
   };
 
+  // Mouse up event handler
   const handleMouseUp = () => {
     setIsMouseDown(false);
   };
 
+  // Submit word handler
   const submitWord = () => {
     const selectedWordIndexes = [...selectedLetters];
 
+    // Check if selected word is found
     for (let i = 0; i < gridContent.length; i++) {
+      // Find word group
       const wordGroup: GridItem[] = [];
       let j = i;
       while (j < gridContent.length && gridContent[j].group === gridContent[i].group) {
@@ -75,6 +99,7 @@ setGridContent(gridContentData);
         j++;
       }
 
+      // Group indexes
       const groupIndexes: { [key: number]: number[] } = {};
       gridContent.forEach(({ group, index, position }) => {
         if (!groupIndexes[group]) {
@@ -83,6 +108,7 @@ setGridContent(gridContentData);
         groupIndexes[group].push(index);
       });
 
+      // Sort group indexes
       for (const group in groupIndexes) {
         groupIndexes[group].sort((a, b) => {
           const posA = gridContent.find(item => item.index === a)?.position ?? 0;
@@ -91,6 +117,7 @@ setGridContent(gridContentData);
         });
       }
 
+      // Check if selected word is found in any group
       for (const group in groupIndexes) {
         const groupIndex = groupIndexes[group];
 
@@ -111,14 +138,18 @@ setGridContent(gridContentData);
     setSelectedLetters([]);
   };
 
+  // Click event handler for grid cells
   const handleClick = (index: number) => {
     if (!selectedLetters.includes(index)) {
       setSelectedLetters([...selectedLetters, index]);
     }
   };
+
+  // Calculate maximum group number
   const maxGroup = Math.max(...gridContent.map(item => item.group));
 
   useEffect(() => {
+    // Increment finishes count if all words are found
     if (foundWords > 0 && foundWords === maxGroup) {
       const incrementFinishes = async () => {
         try {
@@ -136,7 +167,9 @@ setGridContent(gridContentData);
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-      <div className="text-3xl font-bold mb-4">Searchimization</div>
+         <Link href="/">
+        <div className="text-3xl font-bold mb-4">Searchimization</div>
+      </Link>
       <div className="flex">
         <div className="links">
           <a href="https://www.linkedin.com/in/ryangormican/">
@@ -200,7 +233,5 @@ setGridContent(gridContentData);
     </main>
   );
 }
-
-
 
 export default Play;
