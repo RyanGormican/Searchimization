@@ -116,7 +116,7 @@ setGridContent(gridContentData);
       setSelectedLetters([...selectedLetters, index]);
     }
   };
-
+  const maxGroup = groupings.length; 
   useEffect(() => {
     if (foundWords > 0 && foundWords === maxGroup) {
       const incrementFinishes = async () => {
