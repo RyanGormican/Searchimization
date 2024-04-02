@@ -18,6 +18,52 @@ const Puzzles: React.FC = () => {
   const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
   const [sortBy, setSortBy] = useState<string>('theme'); // Default sorting by theme
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
+    const [currentUser, setCurrentUser] = useState<User | null>(null); // State to store the current user
+  const [filteredPuzzleList, setFilteredPuzzleList] = useState<Puzzle[]>([]); // State to store filtered puzzle list
+
+  useEffect(() => {
+    // Function to fetch current user
+    const fetchCurrentUser = () => {
+      const user = auth.currentUser;
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    // Function to filter puzzles based on current user
+    const filterPuzzlesByCurrentUser = () => {
+      if (currentUser) {
+        const filteredPuzzles = puzzleList.filter(puzzle => puzzle.userName === currentUser.uid);
+        setFilteredPuzzleList(filteredPuzzles);
+      } else {
+        // If no user is logged in, set filtered puzzle list to the original puzzle list
+        setFilteredPuzzleList(puzzleList);
+      }
+    };
+
+    filterPuzzlesByCurrentUser();
+  }, [currentUser, puzzleList]);
+
+  // JSX for filtered puzzle list
+  const filteredPuzzleElements = filteredPuzzleList.map(puzzle => (
+ 
+      <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
+        <button>{puzzle.theme}</button>
+        <div className="flex">
+          <Icon icon="mdi:play" width="20" /> {puzzle.plays}
+          <Icon icon="mdi:heart" width="20" /> {puzzle.likes}
+          <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
+        </div>
+      
+      </div>
+  
+  ));
 
   useEffect(() => {
     const fetchPuzzles = async () => {
@@ -58,6 +104,17 @@ const Puzzles: React.FC = () => {
 
     fetchPuzzles();
   }, [sortBy, sortOrder]);
+   // Function to generate a random index within the range of the puzzleList length
+  const getRandomIndex = () => {
+    return Math.floor(Math.random() * puzzleList.length);
+  };
+
+  // Function to handle clicking on the dice block icon
+  const handleRandomPuzzleClick = () => {
+    const randomIndex = getRandomIndex();
+    const randomPuzzleId = puzzleList[randomIndex].id;
+    router.push(`/Play/${randomPuzzleId}`);
+  };
 
   // Handler for changing the sorting criteria
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -93,12 +150,22 @@ const Puzzles: React.FC = () => {
             <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
           </Link>
         </div>
-        <div>
+           {auth.currentUser &&
+           <div>
+        
           <Link href="/Create">
             <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
           </Link>
+   
+    
+          <Link href="/Profile">
+            <button className="py-2 px-4 bg-blue-500 text-white rounded">PROFILE</button>
+          </Link>
+      
         </div>
+        }   
       </div>
+   
       <div className="flex items-center mt-4">
         <label htmlFor="sortSelect" className="mr-2">Sort By:</label>
         {/* Dropdown for selecting sorting criteria */}
@@ -115,6 +182,20 @@ const Puzzles: React.FC = () => {
           {sortOrder === 'asc' ? '^' : 'V'}
         </button>
       </div>
+      {auth.currentUser &&
+      <div>
+  <span style={{ display: 'block', margin: '0 auto', textAlign: 'center', width: 'fit-content' }}>Your Puzzles</span>
+
+          <div className="grid grid-cols-3 gap-4">
+        {filteredPuzzleElements}
+      </div>
+      </div>
+      }
+      <span> Community Puzzles </span>
+        <div className="flex justify-center mt-4">
+      <Icon icon="ion:dice" width="50" onClick={handleRandomPuzzleClick} style={{ cursor: 'pointer' }} />
+    </div>
+
       <div className="grid grid-cols-3 gap-4">
         {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
