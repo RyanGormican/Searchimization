@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, firestore } from '../src/app/firebase';
 import '/src/app/globals.css';
-
+import {  User} from 'firebase/auth';
 interface Puzzle {
   id: string;
   theme: string;
