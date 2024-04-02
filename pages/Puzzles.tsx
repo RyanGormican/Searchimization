@@ -5,6 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { auth, firestore } from '../src/app/firebase';
 import '/src/app/globals.css';
 import {  User} from 'firebase/auth';
+import { useRouter } from 'next/router';
 interface Puzzle {
   id: string;
   theme: string;
@@ -15,6 +16,7 @@ interface Puzzle {
 }
 
 const Puzzles: React.FC = () => {
+  const router = useRouter();
   const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
   const [sortBy, setSortBy] = useState<string>('theme'); // Default sorting by theme
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
