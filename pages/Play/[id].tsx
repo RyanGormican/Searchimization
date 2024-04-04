@@ -47,30 +47,30 @@ const Play = () => {
   const [foundIndexes, setFoundIndexes] = useState<number[]>([]);
 
   useEffect(() => {
-    const fetchPuzzleData = async () => {
-      try {
-        if (!id) return;
+   // Update the fetchPuzzleData function to fetch puzzle data from the 'puzzles' collection
+const fetchPuzzleData = async () => {
+  try {
+    if (!id) return;
 
-        // Fetch puzzle data from Firestore
-        const puzzleDocRef = doc(firestore, 'puzzleList', id as string);
-        const puzzleDoc = await getDoc(puzzleDocRef);
-        const puzzleData = puzzleDoc.data() as PuzzleData;
-        setTheme(puzzleData);
+    // Fetch puzzle data from Firestore
+    const puzzleDocRef = doc(firestore, 'puzzles', id as string);
+    const puzzleDoc = await getDoc(puzzleDocRef);
+    const puzzleData = puzzleDoc.data() as PuzzleData;
+    setTheme(puzzleData.theme);
 
-        // Update plays count
-        await updateDoc(puzzleDocRef, {
-          plays: increment(1)
-        });
+    // Fetch grid content for the puzzle
+    const gridContentData = puzzleData.gridContent;
+    setGridContent(gridContentData);
 
-        // Fetch grid content for the puzzle
-        const puzzleContentDoc = await getDoc(doc(firestore, 'puzzle', id as string));
-        const gridContentData = puzzleContentDoc.data()?.gridContent as GridItem[]; 
-        setGridContent(gridContentData);
+    // Update plays count
+    await updateDoc(puzzleDocRef, {
+      plays: increment(1)
+    });
+  } catch (error) {
+    console.error('Error fetching puzzle data:', error);
+  }
+};
 
-      } catch (error) {
-        console.error('Error fetching puzzle data:', error);
-      }
-    };
 
     fetchPuzzleData();
   }, [id]);

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query,where,orderBy,limit } from 'firebase/firestore';
 import { auth, firestore } from '../src/app/firebase';
 import '/src/app/globals.css';
 import {  User} from 'firebase/auth';
 import { useRouter } from 'next/router';
+
 interface Puzzle {
   id: string;
   theme: string;
@@ -41,12 +42,9 @@ const Puzzles: React.FC = () => {
     // Function to filter puzzles based on current user
     const filterPuzzlesByCurrentUser = () => {
       if (currentUser) {
-        const filteredPuzzles = puzzleList.filter(puzzle => puzzle.userName === currentUser.uid);
+        const filteredPuzzles = puzzleList.filter(puzzle => puzzle.user === currentUser.uid);
         setFilteredPuzzleList(filteredPuzzles);
-      } else {
-        // If no user is logged in, set filtered puzzle list to the original puzzle list
-        setFilteredPuzzleList(puzzleList);
-      }
+      } 
     };
 
     filterPuzzlesByCurrentUser();
@@ -67,45 +65,67 @@ const Puzzles: React.FC = () => {
   
   ));
 
-  useEffect(() => {
-    const fetchPuzzles = async () => {
-      try {
-        // Fetch puzzles from Firestore
-        const querySnapshot = await getDocs(collection(firestore, 'puzzleList'));
-        // Map Firestore documents to Puzzle objects
+ useEffect(() => {
+  const fetchPuzzles = async () => {
+    try {
+      let puzzlesFromStorage = localStorage.getItem('searchimization');
+      if (puzzlesFromStorage) {
+        puzzlesFromStorage = JSON.parse(puzzlesFromStorage);
+        const latestDate = new Date(puzzlesFromStorage.latestDate);
+        const latestTimestamp = latestDate.getTime();
+
+        // Check if we need to fetch new puzzles
+        if (puzzlesFromStorage.entries.length === 0) {
+          // No puzzles in storage, fetch new puzzles
+          const querySnapshot = await getDocs(collection(firestore, 'puzzles'));
+          const puzzles = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Puzzle[];
+
+          localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), entries: puzzles }));
+          setPuzzleList(puzzles.slice(0, 9));
+        } else {
+           const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('timecreated', '>', latestDate), orderBy('timecreated'), limit(9)));
+          const newPuzzles = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Puzzle[];
+          // Find new puzzles, refresh the storage
+          if (newPuzzles.length >0) {
+
+            const newQuerySnapshot = await getDocs(collection(firestore, 'puzzles'), {
+              orderBy: 'timecreated',
+              limit: 9
+            });
+            puzzlesFromStorage.entries = newQuerySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data()
+            })) as Puzzle[];
+          }
+
+          localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), entries: puzzlesFromStorage.entries }));
+          setPuzzleList(puzzlesFromStorage.entries.slice(0, 9));
+        }
+      } else {
+        // No puzzles in storage, fetch new puzzles
+        const querySnapshot = await getDocs(collection(firestore, 'puzzles'));
         const puzzles = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
         })) as Puzzle[];
 
-        // Sort the puzzles array based on the selected sorting criteria
-        const sortedPuzzles = puzzles.sort((a, b) => {
-          if (sortBy === 'theme') {
-            return sortOrder === 'asc' ? a.theme.localeCompare(b.theme) : b.theme.localeCompare(a.theme);
-          } else if (sortBy === 'plays') {
-            return sortOrder === 'asc' ? a.plays - b.plays : b.plays - a.plays;
-          } else if (sortBy === 'likes') {
-            return sortOrder === 'asc' ? a.likes - b.likes : b.likes - a.likes;
-          } else if (sortBy === 'finishes') {
-            return sortOrder === 'asc' ? a.finishes - b.finishes : b.finishes - a.finishes;
-          } else if (sortBy === 'completionRatio') {
-            const completionRatioA = a.finishes / a.plays;
-            const completionRatioB = b.finishes / b.plays;
-            return sortOrder === 'asc' ? completionRatioA - completionRatioB : completionRatioB - completionRatioA;
-          } else if (sortBy === 'userName') {
-            return sortOrder === 'asc' ? a.userName.localeCompare(b.userName) : b.userName.localeCompare(a.userName);
-          }
-          return 0; // Default case
-        });
-
-        setPuzzleList(sortedPuzzles);
-      } catch (error) {
-        console.error('Error fetching puzzles:', error);
+        localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), entries: puzzles }));
+        setPuzzleList(puzzles.slice(0, 9));
       }
-    };
+    } catch (error) {
+      console.error('Error fetching puzzles:', error);
+    }
+  };
 
-    fetchPuzzles();
-  }, [sortBy, sortOrder]);
+  fetchPuzzles();
+}, []);
+
    // Function to generate a random index within the range of the puzzleList length
   const getRandomIndex = () => {
     return Math.floor(Math.random() * puzzleList.length);
@@ -168,31 +188,7 @@ const Puzzles: React.FC = () => {
         }   
       </div>
    
-      <div className="flex items-center mt-4">
-        <label htmlFor="sortSelect" className="mr-2">Sort By:</label>
-        {/* Dropdown for selecting sorting criteria */}
-        <select id="sortSelect" value={sortBy} onChange={handleSortChange}>
-          <option value="theme">Theme Name</option>
-          <option value="plays">Plays</option>
-          <option value="likes">Likes</option>
-          <option value="finishes">Finishes</option>
-          <option value="completionRatio">Completion Ratio</option>
-          <option value="userName">Username</option>
-        </select>
-        {/* Button to toggle sorting order */}
-        <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
-          {sortOrder === 'asc' ? '^' : 'V'}
-        </button>
-      </div>
-      {auth.currentUser &&
-      <div>
-  <span style={{ display: 'block', margin: '0 auto', textAlign: 'center', width: 'fit-content' }}>Your Puzzles</span>
 
-          <div className="grid grid-cols-3 gap-4">
-        {filteredPuzzleElements}
-      </div>
-      </div>
-      }
       <span> Community Puzzles </span>
         <div className="flex justify-center mt-4">
       <Icon icon="ion:dice" width="50" onClick={handleRandomPuzzleClick} style={{ cursor: 'pointer' }} />

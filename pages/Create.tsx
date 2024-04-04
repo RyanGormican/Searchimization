@@ -178,25 +178,28 @@ const Create = () => {
 
   // Upload puzzle handler
   const uploadPuzzle = async () => {
-    try {
-      const puzzleListRef = await addDoc(collection(firestore, 'puzzleList'), {
-        theme: name,
-        userName: '',
-        user: auth.currentUser ? auth.currentUser.uid : '',
-        likes: 0,
-        plays: 0,
-        finishes: 0,
-        timecreated: new Date().toISOString(), 
-      });
+  try {
+    // Construct the puzzle object
+    const puzzleData = {
+      theme: name,
+      gridContent: gridContent,
+      userName: '',
+      user: auth.currentUser ? auth.currentUser.uid : '',
+      likes: 0,
+      plays: 0,
+      finishes: 0,
+      timecreated: new Date().toISOString(),
+    };
 
-      await setDoc(doc(firestore, 'puzzle', puzzleListRef.id), {
-        gridContent: gridContent,
-      });
-      router.push('/Puzzles'); 
-    } catch (error) {
-      console.error('Error uploading puzzle:', error);
-    }
-  };
+    // Add puzzle data to 'puzzles' collection
+    await addDoc(collection(firestore, 'puzzles'), puzzleData);
+
+    router.push('/Puzzles');
+  } catch (error) {
+    console.error('Error uploading puzzle:', error);
+  }
+};
+
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">

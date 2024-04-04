@@ -3,7 +3,7 @@ import { useState, useRef ,useEffect} from "react";
 import { auth, firestore } from './firebase';
 
 import { signInWithPopup, User, GoogleAuthProvider,signOut ,onAuthStateChanged,  } from 'firebase/auth';
-
+import { collection, addDoc, setDoc, getDocs, doc } from 'firebase/firestore';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 
@@ -15,7 +15,7 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
 
   // Google authentication provider
-  let googleProvider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
  
   // Function to sign in with Google
   const signInGoogle = () => {
@@ -29,19 +29,20 @@ export default function Home() {
 
   // Effect to listen for changes in user authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+    } else {
+      setUser(null);
+    }
+  });
 
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+}, []);
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
+
       <Link href="/">
         <div className="text-3xl font-bold mb-4">Searchimization</div>
       </Link>
