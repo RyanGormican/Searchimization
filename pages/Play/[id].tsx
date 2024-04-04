@@ -56,7 +56,7 @@ const fetchPuzzleData = async () => {
     const puzzleDocRef = doc(firestore, 'puzzles', id as string);
     const puzzleDoc = await getDoc(puzzleDocRef);
     const puzzleData = puzzleDoc.data() as PuzzleData;
-    setTheme(puzzleData.theme);
+    setTheme(puzzleData);
 
     // Fetch grid content for the puzzle
     const gridContentData = puzzleData.gridContent;
