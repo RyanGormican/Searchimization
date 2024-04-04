@@ -19,6 +19,7 @@ interface GridItem {
 // Interface for puzzle data
 interface PuzzleData {
   theme: string;
+  gridContent: GridItem[];
 }
 
 const Play = () => {
