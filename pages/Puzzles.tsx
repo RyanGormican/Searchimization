@@ -38,32 +38,7 @@ const Puzzles: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  useEffect(() => {
-    // Function to filter puzzles based on current user
-    const filterPuzzlesByCurrentUser = () => {
-      if (currentUser) {
-        const filteredPuzzles = puzzleList.filter(puzzle => puzzle.user === currentUser.uid);
-        setFilteredPuzzleList(filteredPuzzles);
-      } 
-    };
 
-    filterPuzzlesByCurrentUser();
-  }, [currentUser, puzzleList]);
-
-  // JSX for filtered puzzle list
-  const filteredPuzzleElements = filteredPuzzleList.map(puzzle => (
- 
-      <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
-        <button>{puzzle.theme}</button>
-        <div className="flex">
-          <Icon icon="mdi:play" width="20" /> {puzzle.plays}
-          <Icon icon="mdi:heart" width="20" /> {puzzle.likes}
-          <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
-        </div>
-      
-      </div>
-  
-  ));
 
  useEffect(() => {
   const fetchPuzzles = async () => {
