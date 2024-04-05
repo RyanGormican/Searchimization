@@ -7,7 +7,7 @@ import '/src/app/globals.css';
 
 const Profile: React.FC = () => {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [usernameT, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Profile: React.FC = () => {
     // Check if profile information exists in local storage, if not, append it
     const storageData = localStorage.getItem('searchimization');
     if (!storageData) {
-      localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), profile: { username: '' }, entries: [] }));
+      localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), profile: { username: usernameT }, entries: [] }));
     }
   }, [router]);
 
@@ -94,11 +94,11 @@ const Profile: React.FC = () => {
         <h1 className="text-3xl font-bold my-4">User Profile</h1>
         <input
           type="text"
-          value={username}
+          value={usernameT}
           onChange={(e) => setUsername(e.target.value)}
           onBlur={(e) => handleUsernameChange(e.target.value)}
         />
-        <button onClick={() => handleUsernameChange(username)}>Update Username</button>
+        <button onClick={() => handleUsernameChange(usernameT)}>Update Username</button>
       </main>
     </div>
   );
