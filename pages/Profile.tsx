@@ -36,39 +36,44 @@ const Profile: React.FC = () => {
     fetchData();
   }, [router]);
 
-  const handleUsernameChange = async (newUsername: string) => {
-    try {
-      // Update the username in the user document
-      const userDocRef = auth.currentUser ? doc(firestore, 'users', auth.currentUser.uid) : null;
-      await setDoc(userDocRef, { username: newUsername });
-      const currentTime = new Date();
-
-      // Update the username in all "puzzles" documents where the user is equal to the UID of the authenticated user
-      const userPuzzlesQuery = query(collection(firestore, 'puzzles'), where('user', '==', auth.currentUser.uid));
-      const userPuzzlesSnapshot = await getDocs(userPuzzlesQuery);
-      const batch = writeBatch(firestore);
-
-      userPuzzlesSnapshot.forEach((doc) => {
-        const puzzleDocRef = doc.ref;
-        batch.update(puzzleDocRef, { userName: newUsername, lastupdated: currentTime });
-      });
-
-      await batch.commit();
-
-      // Update local state
-      setUsername(newUsername);
-
-      // Update local storage
-      const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        parsedData.profile.username = newUsername;
-        localStorage.setItem('searchimization', JSON.stringify(parsedData));
-      }
-    } catch (error) {
-      console.error('Error updating username:', error);
+const handleUsernameChange = async (newUsername: string) => {
+  try {
+    if (!auth.currentUser) {
+      return;
     }
-  };
+
+    // Update the username in the user document
+    const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+    await setDoc(userDocRef, { username: newUsername });
+    const currentTime = new Date();
+
+    // Update the username in all "puzzles" documents where the user is equal to the UID of the authenticated user
+    const userPuzzlesQuery = query(collection(firestore, 'puzzles'), where('user', '==', auth.currentUser.uid));
+    const userPuzzlesSnapshot = await getDocs(userPuzzlesQuery);
+    const batch = writeBatch(firestore);
+
+    userPuzzlesSnapshot.forEach((doc) => {
+      const puzzleDocRef = doc.ref;
+      batch.update(puzzleDocRef, { userName: newUsername, lastupdated: currentTime });
+    });
+
+    await batch.commit();
+
+    // Update local state
+    setUsername(newUsername);
+
+    // Update local storage
+    const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+    if (storageData) {
+      const parsedData = JSON.parse(storageData);
+      parsedData.profile.username = newUsername;
+      localStorage.setItem('searchimization', JSON.stringify(parsedData));
+    }
+  } catch (error) {
+    console.error('Error updating username:', error);
+  }
+};
+
 
   if (loading) {
     return <div>Loading...</div>;
