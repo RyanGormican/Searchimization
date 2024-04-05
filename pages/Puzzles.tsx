@@ -36,46 +36,47 @@ const fetchPuzzles = async () => {
     }
 
 if (puzzlesFromStorage && puzzlesFromStorage.entries.length === 0) {
-      // If there are no entries in storage, fetch the latest 9 puzzles
-      const querySnapshot = await getDocs(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9));
-      const puzzles = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Puzzle[];
+  // If there are no entries in storage, fetch the latest 9 puzzles
+  const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
+  const puzzles = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Puzzle[];
 
-      localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: puzzles }));
-      setPuzzleList(puzzles);
-    } else {
-      // If there are entries in storage, find the latest lastupdated timestamp
-      const latestLastUpdated = new Date(Math.max(...puzzlesFromStorage.entries.map(puzzle => new Date(puzzle.lastupdated).getTime()))).toISOString();
+  localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: puzzles }));
+  setPuzzleList(puzzles);
+} else {
+  // If there are entries in storage, find the latest lastupdated timestamp
+  const latestLastUpdated = new Date(Math.max(...puzzlesFromStorage.entries.map(puzzle => new Date(puzzle.lastupdated).getTime()))).toISOString();
 
-      const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
+  const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
 
-      const newPuzzles = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Puzzle[];
+  const newPuzzles = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Puzzle[];
 
-      if (newPuzzles.length > 0) {
-        // Update the existing entries with new puzzles
-        const updatedEntries = [...puzzlesFromStorage.entries];
-        newPuzzles.forEach(newPuzzle => {
-          const existingIndex = updatedEntries.findIndex(entry => entry.id === newPuzzle.id);
-          if (existingIndex !== -1) {
-            // If puzzle exists, update it
-            updatedEntries[existingIndex] = newPuzzle;
-          } else {
-            // If puzzle doesn't exist, append it
-            updatedEntries.push(newPuzzle);
-          }
-        });
-
-        localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: updatedEntries }));
-        setPuzzleList(updatedEntries.slice(0, 9));
+  if (newPuzzles.length > 0) {
+    // Update the existing entries with new puzzles
+    const updatedEntries = [...puzzlesFromStorage.entries];
+    newPuzzles.forEach(newPuzzle => {
+      const existingIndex = updatedEntries.findIndex(entry => entry.id === newPuzzle.id);
+      if (existingIndex !== -1) {
+        // If puzzle exists, update it
+        updatedEntries[existingIndex] = newPuzzle;
       } else {
-        setPuzzleList(puzzlesFromStorage.entries);
+        // If puzzle doesn't exist, append it
+        updatedEntries.push(newPuzzle);
       }
-    }
+    });
+
+    localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: updatedEntries }));
+    setPuzzleList(updatedEntries.slice(0, 9));
+  } else {
+    setPuzzleList(puzzlesFromStorage.entries);
+  }
+}
+
   } catch (error) {
     console.error('Error fetching puzzles:', error);
   }
