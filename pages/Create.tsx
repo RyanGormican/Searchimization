@@ -179,11 +179,14 @@ const Create = () => {
   // Upload puzzle handler
   const uploadPuzzle = async () => {
   try {
+  // Retrieve username from local storage
+const searchimizationData = JSON.parse(localStorage.getItem('searchimization'));
+const username = searchimizationData.profile.username;
     // Construct the puzzle object
     const puzzleData = {
       theme: name,
       gridContent: gridContent,
-      userName: '',
+      userName: username,
       user: auth.currentUser ? auth.currentUser.uid : '',
       likes: 0,
       plays: 0,

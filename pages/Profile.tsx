@@ -15,25 +15,11 @@ const Profile: React.FC = () => {
       const unsubscribe = auth.onAuthStateChanged(async user => {
         if (!user) {
           router.push('/');
-        } else {
-          try {
-            // Check if a document exists for the logged-in user in the "users" collection
-            const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
-
-            if (userDocSnap.exists()) {
-              // If the document exists, set the username state
-              setUsername(userDocSnap.data().username);
-            } else {
-              // If the document doesn't exist, create a new document with the user's UID and an initial username
-              await setDoc(userDocRef, { username: '' });
-              setUsername('');
-            }
-
-            setLoading(false);
-          } catch (error) {
-            console.error('Error fetching user data:', error);
-          }
+        }else
+        {
+         const storageData = JSON.parse(localStorage.getItem('searchimization'));
+        setUsername(storageData.profile.username);
+        setLoading(false);
         }
       });
 
@@ -42,13 +28,11 @@ const Profile: React.FC = () => {
 
     fetchData();
 
-    // Check if profile information exists in local storage, if not, append it
-    const storageData = localStorage.getItem('searchimization');
-    if (!storageData) {
-      localStorage.setItem('searchimization', JSON.stringify({ latestDate: new Date().toISOString(), profile: { username: usernameT }, entries: [] }));
-    }
+   
+  
+ 
   }, [router]);
-
+   
   const handleUsernameChange = async (newUsername: string) => {
     try {
       // Update the username in the user document
@@ -91,7 +75,7 @@ const Profile: React.FC = () => {
     <div>
       <Header currentUser={auth.currentUser} />
       <main className="flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold my-4">User Profile</h1>
+        <h1 className="text-3xl font-bold my-4">Username </h1>
         <input
           type="text"
           value={usernameT}

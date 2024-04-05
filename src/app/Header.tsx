@@ -10,6 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const handleLogout = () => {
+    localStorage.removeItem('searchimization');
     signOut(auth);
   };
 

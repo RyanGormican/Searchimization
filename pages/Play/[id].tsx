@@ -48,24 +48,47 @@ const Play = () => {
   const [foundIndexes, setFoundIndexes] = useState<number[]>([]);
 
   useEffect(() => {
-   // Update the fetchPuzzleData function to fetch puzzle data from the 'puzzles' collection
+
+// Check local storage for puzzle data before fetching from Firestore
+// Check local storage for puzzle data before fetching from Firestore
 const fetchPuzzleData = async () => {
   try {
     if (!id) return;
 
-    // Fetch puzzle data from Firestore
+    // Check if puzzle data exists in local storage
+    const searchimizationData = JSON.parse(localStorage.getItem('searchimization'));
+    if (searchimizationData && searchimizationData.entries) {
+      const puzzleFromStorage = searchimizationData.entries.find(entry => entry.id === id);
+      if (puzzleFromStorage) {
+        setTheme(puzzleFromStorage);
+        setGridContent(puzzleFromStorage.gridContent); 
+
+        // Increment plays count and update last updated timestamp
+        const puzzleDocRef = doc(firestore, 'puzzles', id as string);
+        await updateDoc(puzzleDocRef, {
+          plays: increment(1),
+          lastupdated: new Date().toISOString()
+        });
+
+        return;
+      }
+    }
+
+    // Fetch puzzle data from Firestore if not found in local storage
     const puzzleDocRef = doc(firestore, 'puzzles', id as string);
     const puzzleDoc = await getDoc(puzzleDocRef);
     const puzzleData = puzzleDoc.data() as PuzzleData;
     setTheme(puzzleData);
+    setGridContent(puzzleData.gridContent); // Set grid content state
 
-    // Fetch grid content for the puzzle
-    const gridContentData = puzzleData.gridContent;
-    setGridContent(gridContentData);
+    // Save puzzle data to local storage
+    const updatedEntries = searchimizationData.entries.map(entry => entry.id === id ? puzzleData : entry);
+    localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
 
-    // Update plays count
+    // Increment plays count and update last updated timestamp
     await updateDoc(puzzleDocRef, {
-      plays: increment(1)
+      plays: increment(1),
+      lastupdated: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching puzzle data:', error);
@@ -73,7 +96,9 @@ const fetchPuzzleData = async () => {
 };
 
 
+
     fetchPuzzleData();
+
   }, [id]);
 
   // Reset selected letters
@@ -154,9 +179,10 @@ const fetchPuzzleData = async () => {
     if (foundWords > 0 && foundWords === maxGroup) {
       const incrementFinishes = async () => {
         try {
-          const puzzleRef = doc(firestore, 'puzzleList', id as string);
+          const puzzleRef = doc(firestore, 'puzzles', id as string);
           await updateDoc(puzzleRef, {
-            finishes: increment(1)
+            finishes: increment(1),
+            lastupdated: new Date().toISOString()
           });
         } catch (error) {
           console.error('Error incrementing finishes:', error);
