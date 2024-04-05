@@ -38,22 +38,22 @@ useEffect(() => {
 
 
       // Check if searchimization already exists in local storage
-      const existingSearchimization = localStorage.getItem('searchimization');
-      if (!existingSearchimization) {
-        // Retrieve user document
-        const userDocRef = doc(firestore, 'users', user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          // Grab the userName field
-          const userName = userData.username;
-          // Set searchimization in local storage
-          localStorage.setItem('searchimization', JSON.stringify({ profile: { username: userName }, entries: [] }));
-        } else
-        {
-        await setDoc(userDocRef, { username: '' });
-        localStorage.setItem('searchimization', JSON.stringify({ profile: { username: '' }, entries: [] }));
-        }
+   const existingSearchimization = localStorage.getItem('searchimization');
+let userName = '';
+
+if (!existingSearchimization) {
+  // Retrieve user document
+  const userDocRef = doc(firestore, 'users', user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (userDocSnap.exists()) {
+    const userData = userDocSnap.data();
+    // Grab the userName field
+    userName = userData.username;
+  } else {
+    await setDoc(userDocRef, { username: '' });
+  }
+}
+
       }
     } else {
       setUser(null);

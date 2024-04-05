@@ -7,6 +7,11 @@ import { auth, firestore } from '../src/app/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
+interface SearchimizationData {
+  profile: {
+    username: string;
+  }
+}
 
 const Create = () => {
   // Ref for the grid

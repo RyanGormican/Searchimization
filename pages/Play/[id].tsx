@@ -86,7 +86,7 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
     setGridContent(puzzleData.gridContent); // Set grid content state
 
     // Save puzzle data to local storage
-    const updatedEntries = searchimizationData.entries.map(entry => entry.id === id ? puzzleData : entry);
+    const updatedEntries: SearchimizationEntry[] = searchimizationData.entries.map((entry: SearchimizationEntry) => entry.id === id ? puzzleData : entry);
     localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
 
     // Increment plays count and update last updated timestamp

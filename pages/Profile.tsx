@@ -17,7 +17,7 @@ const Profile: React.FC = () => {
           router.push('/');
         }else
         {
-         const storageData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+       const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
         setUsername(storageData.profile.username);
         setLoading(false);
         }
@@ -56,7 +56,7 @@ const Profile: React.FC = () => {
       setUsername(newUsername);
 
       // Update local storage
-      const storageData = localStorage.getItem('searchimization');
+      const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
       if (storageData) {
         const parsedData = JSON.parse(storageData);
         parsedData.profile.username = newUsername;

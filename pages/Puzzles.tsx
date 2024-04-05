@@ -28,10 +28,12 @@ const Puzzles: React.FC = () => {
   // Function to fetch puzzles
 const fetchPuzzles = async () => {
   try {
-    let puzzlesFromStorage = localStorage.getItem('searchimization');
+   const storageData = localStorage.getItem('searchimization');
+let puzzlesFromStorage: { profile: { username: string }; entries: Puzzle[] } | null = null;
 
-    if (puzzlesFromStorage) {
-      puzzlesFromStorage = JSON.parse(puzzlesFromStorage);
+if (storageData) {
+  puzzlesFromStorage = JSON.parse(storageData);
+  }
 
       if (puzzlesFromStorage.entries.length === 0) {
         // If there are no entries in storage, fetch the latest 9 puzzles
