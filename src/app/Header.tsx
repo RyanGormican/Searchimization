@@ -54,5 +54,5 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
     </header>
   );
 };
-
+,
 export default Header;
