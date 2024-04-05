@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { signOut } from 'firebase/auth';
 import { auth, firestore } from './firebase';
+import { User } from 'firebase/auth';
 interface HeaderProps {
-  currentUser: firebase.User | null;
+  currentUser: User  | null;
 }
 
 const Header: React.FC<HeaderProps> = ({ currentUser }) => {
