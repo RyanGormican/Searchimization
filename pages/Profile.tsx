@@ -63,12 +63,13 @@ const handleUsernameChange = async (newUsername: string) => {
     setUsername(newUsername);
 
     // Update local storage
-    const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-    if (storageData) {
-      const parsedData = JSON.parse(storageData);
-      parsedData.profile.username = newUsername;
-      localStorage.setItem('searchimization', JSON.stringify(parsedData));
-    }
+const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+if (storageData) {
+  // No need to parse storageData again, it's already an object
+  storageData.profile.username = newUsername;
+  localStorage.setItem('searchimization', JSON.stringify(storageData));
+}
+
   } catch (error) {
     console.error('Error updating username:', error);
   }
