@@ -35,7 +35,7 @@ const fetchPuzzles = async () => {
       puzzlesFromStorage = JSON.parse(storageData);
     }
 
-    if (puzzlesFromStorage.entries.length === 0) {
+if (puzzlesFromStorage && puzzlesFromStorage.entries.length === 0) {
       // If there are no entries in storage, fetch the latest 9 puzzles
       const querySnapshot = await getDocs(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9));
       const puzzles = querySnapshot.docs.map((doc) => ({
