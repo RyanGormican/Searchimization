@@ -180,7 +180,8 @@ const Create = () => {
   const uploadPuzzle = async () => {
   try {
   // Retrieve username from local storage
-const searchimizationData = JSON.parse(localStorage.getItem('searchimization'));
+const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+
 const username = searchimizationData.profile.username;
     // Construct the puzzle object
     const puzzleData = {
