@@ -34,26 +34,21 @@ useEffect(() => {
     if (user) {
       setUser(user);
 
-     
-
-
       // Check if searchimization already exists in local storage
-   const existingSearchimization = localStorage.getItem('searchimization');
-let userName = '';
+      const existingSearchimization = localStorage.getItem('searchimization');
+      let userName = '';
 
-if (!existingSearchimization) {
-  // Retrieve user document
-  const userDocRef = doc(firestore, 'users', user.uid);
-  const userDocSnap = await getDoc(userDocRef);
-  if (userDocSnap.exists()) {
-    const userData = userDocSnap.data();
-    // Grab the userName field
-    userName = userData.username;
-  } else {
-    await setDoc(userDocRef, { username: '' });
-  }
-}
-
+      if (!existingSearchimization) {
+        // Retrieve user document
+        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          // Grab the userName field
+          userName = userData.username;
+        } else {
+          await setDoc(userDocRef, { username: '' });
+        }
       }
     } else {
       setUser(null);
@@ -62,6 +57,7 @@ if (!existingSearchimization) {
 
   return () => unsubscribe();
 }, []);
+
 
 
   return (
