@@ -5,6 +5,14 @@ import { auth, firestore } from '../src/app/firebase';
 import { collection, getDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; // Import writeBatch
 import '/src/app/globals.css';
 
+// Define SearchimizationData type
+interface SearchimizationData {
+  profile: {
+    username: string;
+  };
+
+}
+
 const Profile: React.FC = () => {
   const router = useRouter();
   const [usernameT, setUsername] = useState('');
@@ -15,11 +23,10 @@ const Profile: React.FC = () => {
       const unsubscribe = auth.onAuthStateChanged(async user => {
         if (!user) {
           router.push('/');
-        }else
-        {
-       const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-        setUsername(storageData.profile.username);
-        setLoading(false);
+        } else {
+          const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+          setUsername(storageData.profile.username);
+          setLoading(false);
         }
       });
 
@@ -27,12 +34,8 @@ const Profile: React.FC = () => {
     };
 
     fetchData();
-
-   
-  
- 
   }, [router]);
-   
+
   const handleUsernameChange = async (newUsername: string) => {
     try {
       // Update the username in the user document
