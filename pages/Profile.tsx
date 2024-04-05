@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
   const handleUsernameChange = async (newUsername: string) => {
     try {
       // Update the username in the user document
-      const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+      const userDocRef = auth.currentUser ? doc(firestore, 'users', auth.currentUser.uid) : null;
       await setDoc(userDocRef, { username: newUsername });
       const currentTime = new Date();
 
