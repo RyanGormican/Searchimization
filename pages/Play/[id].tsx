@@ -56,7 +56,8 @@ const fetchPuzzleData = async () => {
     if (!id) return;
 
     // Check if puzzle data exists in local storage
-    const searchimizationData = JSON.parse(localStorage.getItem('searchimization'));
+const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+
     if (searchimizationData && searchimizationData.entries) {
       const puzzleFromStorage = searchimizationData.entries.find(entry => entry.id === id);
       if (puzzleFromStorage) {
