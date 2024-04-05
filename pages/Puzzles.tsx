@@ -74,7 +74,7 @@ if (storageData) {
           setPuzzleList(updatedEntries.slice(0, 9));
         }else
         {
-        setPuzzleList(puzzlesFromStorage.entries)
+        setPuzzleList(puzzlesFromStorage.entries);
         }
         
       }
