@@ -15,7 +15,10 @@ interface GridItem {
   index: number;
   found: boolean;
 }
-
+// Interface for local storage
+interface SearchimizationEntry {
+  id: string;
+}
 // Interface for puzzle data
 interface PuzzleData {
   theme: string;
@@ -59,7 +62,7 @@ const fetchPuzzleData = async () => {
 const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
 
     if (searchimizationData && searchimizationData.entries) {
-      const puzzleFromStorage = searchimizationData.entries.find(entry => entry.id === id);
+const puzzleFromStorage = searchimizationData.entries.find((entry: SearchimizationEntry) => entry.id === id);
       if (puzzleFromStorage) {
         setTheme(puzzleFromStorage);
         setGridContent(puzzleFromStorage.gridContent); 
