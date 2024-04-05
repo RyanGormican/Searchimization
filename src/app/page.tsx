@@ -6,7 +6,7 @@ import { signInWithPopup, User, GoogleAuthProvider,signOut ,onAuthStateChanged, 
 import { collection, addDoc, setDoc, getDocs, doc } from 'firebase/firestore';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-
+import Header from './Header';
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -42,44 +42,9 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-
-      <Link href="/">
-        <div className="text-3xl font-bold mb-4">Searchimization</div>
-      </Link>
-      <div className="flex">
-        <div className="links">
-          <a href="https://www.linkedin.com/in/ryangormican/">
-            <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
-          </a>
-          <a href="https://github.com/RyanGormican/Searchimization">
-            <Icon icon="mdi:github" color="#e8eaea" width="60" />
-          </a>
-          <a href="https://ryangormicanportfoliohub.vercel.app/">
-            <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
-          </a>
-        </div>
-        <div>
-          <Link href="/Puzzles">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
-          </Link>
-        </div>
-        {/* Render CREATE button only if user is authenticated */}
-        {user &&
-          <div>
-            <Link href="/Create">
-              <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
-            </Link>
-          </div>
-        }
-      </div>
+        <Header currentUser={user} />
       {/* Render error message if exists */}
       {error && <div className="text-red-500">{error}</div>}
-      {/* Render logout button if user is authenticated */}
-      {user &&
-        <div className="logout">
-          <Icon onClick={handleLogout} icon="material-symbols:logout" height="60" />
-        </div>
-      }
       {/* Render sign in with Google button if user is not authenticated */}
       {!user &&
         <div className="text-center">

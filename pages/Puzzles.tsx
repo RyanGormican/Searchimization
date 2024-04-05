@@ -6,7 +6,7 @@ import { auth, firestore } from '../src/app/firebase';
 import '/src/app/globals.css';
 import {  User} from 'firebase/auth';
 import { useRouter } from 'next/router';
-
+import Header from '../src/app/Header';
 interface Puzzle {
   id: string;
   theme: string;
@@ -21,22 +21,8 @@ const Puzzles: React.FC = () => {
   const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
   const [sortBy, setSortBy] = useState<string>('theme'); // Default sorting by theme
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
-    const [currentUser, setCurrentUser] = useState<User | null>(null); // State to store the current user
   const [filteredPuzzleList, setFilteredPuzzleList] = useState<Puzzle[]>([]); // State to store filtered puzzle list
 
-  useEffect(() => {
-    // Function to fetch current user
-    const fetchCurrentUser = () => {
-      const user = auth.currentUser;
-      if (user) {
-        setCurrentUser(user);
-      } else {
-        setCurrentUser(null);
-      }
-    };
-
-    fetchCurrentUser();
-  }, []);
 
 
 
@@ -52,7 +38,7 @@ const Puzzles: React.FC = () => {
         // Check if we need to fetch new puzzles
         if (puzzlesFromStorage.entries.length === 0) {
           // No puzzles in storage, fetch new puzzles
-          const querySnapshot = await getDocs(collection(firestore, 'puzzles'));
+          const querySnapshot = await getDocs(collection(firestore, 'puzzles'),limit(9));
           const puzzles = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
@@ -127,43 +113,7 @@ const Puzzles: React.FC = () => {
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-       <Link href="/">
-        <div className="text-3xl font-bold mb-4">Searchimization</div>
-      </Link>
-      <div className="links">
-        <a href="https://www.linkedin.com/in/ryangormican/">
-          <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
-        </a>
-        <a href="https://github.com/RyanGormican/Searchimization">
-          <Icon icon="mdi:github" color="#e8eaea" width="60" />
-        </a>
-        <a href="https://ryangormicanportfoliohub.vercel.app/">
-          <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
-        </a>
-      </div>
-      <div className="flex">
-        <div>
-          <Link href="/Puzzles">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
-          </Link>
-        </div>
-           {auth.currentUser &&
-           <div>
-        
-          <Link href="/Create">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
-          </Link>
-   
-    
-          <Link href="/Profile">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">PROFILE</button>
-          </Link>
-      
-        </div>
-        }   
-      </div>
-   
-
+      <Header currentUser={auth.currentUser} />
       <span> Community Puzzles </span>
         <div className="flex justify-center mt-4">
       <Icon icon="ion:dice" width="50" onClick={handleRandomPuzzleClick} style={{ cursor: 'pointer' }} />

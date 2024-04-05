@@ -189,6 +189,7 @@ const Create = () => {
       plays: 0,
       finishes: 0,
       timecreated: new Date().toISOString(),
+      lastupdated: new Date().toISOString(),
     };
 
     // Add puzzle data to 'puzzles' collection
