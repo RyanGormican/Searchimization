@@ -102,11 +102,11 @@ export default function Home() {
       {/* Render sign in buttons */}
       {!user && (
         <div className="text-center">
-          <button onClick={() => setShowModal(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
+          <button onClick={() => setShowModal(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
             <Icon icon="ic:outline-email" height="30"/>
             <span>Sign in with Email</span>
           </button>
-          <button onClick={signInGoogle} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
+          <button onClick={signInGoogle} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
             <Icon icon="devicon:google" height="30" />
             <span className="ml-2">Sign in with Google</span>
           </button>
