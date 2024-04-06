@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react';
 import { auth, firestore } from '../src/app/firebase';
 import { signOut, User } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { User } from 'firebase/auth'
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import Header from '../src/app/Header';
 interface SearchimizationData {
