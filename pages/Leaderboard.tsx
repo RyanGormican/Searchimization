@@ -15,10 +15,11 @@ interface LeaderboardUser {
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
 
+  // Fetch leaderboard data when mounted
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const leaderboardRef = collection(firestore, 'users');
-      const leaderboardQuery = query(leaderboardRef, orderBy('totalfinishes', 'desc'), limit(10)); 
+      const leaderboardQuery = query(leaderboardRef, orderBy('totalfinishes', 'desc'), limit(10)); // Grab the 10 users with the highest total finishes
       const snapshot = await getDocs(leaderboardQuery);
       const leaderboardData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as LeaderboardUser));
       setLeaderboard(leaderboardData);
