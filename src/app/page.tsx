@@ -58,7 +58,7 @@ export default function Home() {
       // Attempt sign-up
       await createUserWithEmailAndPassword(auth, email, password);
       setShowModal(false);
-    } catch (error) {
+    } catch (error: any) {
       // Handle sign-up error
       setError(error.message);
     }
