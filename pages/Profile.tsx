@@ -11,6 +11,8 @@ interface SearchimizationData {
     username: string;
     totalplays: number; 
     totalfinishes: number;
+    sessionplays: number;
+    sessionfinishes: number;
   };
 
 }
