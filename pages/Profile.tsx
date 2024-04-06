@@ -9,6 +9,8 @@ import '/src/app/globals.css';
 interface SearchimizationData {
   profile: {
     username: string;
+    totalplays: number; 
+    totalfinishes: number;
   };
 
 }
