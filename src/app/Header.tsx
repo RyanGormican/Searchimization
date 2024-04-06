@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import { signOut } from 'firebase/auth';
 import { auth, firestore } from './firebase';
 import { User } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, updateDoc, doc } from 'firebase/firestore';
 
 interface Feedback {
   name: string;
@@ -22,10 +22,45 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const [name, setName] = useState<string>('');
   const [suggestion, setSuggestion] = useState<string>('');
 
-  const handleLogout = () => {
-    localStorage.removeItem('searchimization');
-    signOut(auth);
-  };
+ const handleLogout = async () => {
+  try {
+    if (currentUser) {
+      const userId = currentUser.uid;
+      const userDocRef = doc(firestore, 'users', userId);
+      
+      // Get the document snapshot
+      const userDocSnap = await getDoc(userDocRef);
+      
+      // If the document exists, update the totalplays and totalfinishes
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        
+        // Retrieve totalplays and totalfinishes from local storage
+        const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+        const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+
+        // Calculate new totalplays and totalfinishes
+        const newTotalplays = (userData.totalplays || 0) + sessionplays;
+        const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+
+        // Update the document with incremented values
+        await updateDoc(userDocRef, {
+          totalplays: newTotalplays,
+          totalfinishes: newTotalfinishes
+        });
+
+        // Remove the searchimization data from local storage
+        localStorage.removeItem('searchimization');
+
+        // Sign out the user
+        await signOut(auth);
+      }
+    }
+  } catch (error) {
+    console.error('Error handling logout:', error);
+  }
+};
+
 
   const toggleFeedbackModal = () => {
     setShowFeedbackModal(!showFeedbackModal);
@@ -73,12 +108,18 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
           <Icon icon="material-symbols:feedback"  width="60" />
         </div>
       </div>
-      <div>
+    
+      <div className="flex">
+        <div>
             <Link href="/Puzzles">
               <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
             </Link>
       </div>
-      <div className="flex">
+            <div>
+            <Link href="/Leaderboard">
+              <button className="py-2 px-4 bg-blue-500 text-white rounded">LEADERBOARD</button>
+            </Link>
+      </div>
         {currentUser && (
           <div>
             <Link href="/Create">
@@ -121,9 +162,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
               </div>
               <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-lg">Submit</button>
             </form>
-            <div className="absolute top-4 right-4 cursor-pointer" onClick={toggleFeedbackModal}>
-              <Icon icon="bi:x-circle-fill" color="#888" width="24" />
-            </div>
+        
           </div>
         </div>
       )}

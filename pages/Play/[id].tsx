@@ -66,6 +66,11 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
       if (puzzleFromStorage) {
         setTheme(puzzleFromStorage);
         setGridContent(puzzleFromStorage.gridContent); 
+            const updatedProfile = {
+              ...searchimizationData.profile,
+              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1
+            };
+            localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
         // Increment plays count and update last updated timestamp
         const puzzleDocRef = doc(firestore, 'puzzles', id as string);
@@ -188,6 +193,12 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
             finishes: increment(1),
             lastupdated: new Date().toISOString()
           });
+             const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+          const updatedProfile = {
+            ...searchimizationData.profile,
+            sessionfinishes: (searchimizationData.profile.sessionfinishes || 0) + 1
+          };
+          localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
         } catch (error) {
           console.error('Error incrementing finishes:', error);
         }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '../src/app/Header';
 import { auth, firestore } from '../src/app/firebase';
-import { collection, getDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; // Import writeBatch
+import { collection, getDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; 
 import '/src/app/globals.css';
 
 // Define SearchimizationData type
@@ -17,7 +17,8 @@ const Profile: React.FC = () => {
   const router = useRouter();
   const [usernameT, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const [totalplays, setTotalPlays] = useState(0);
+  const [totalfinishes, setTotalFinishes] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -26,6 +27,8 @@ const Profile: React.FC = () => {
         } else {
           const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
           setUsername(storageData.profile.username);
+          setTotalPlays(storageData.profile.totalplays);
+          setTotalFinishes(storageData.profile.totalfinishes);
           setLoading(false);
         }
       });
@@ -92,6 +95,9 @@ if (storageData) {
           onBlur={(e) => handleUsernameChange(e.target.value)}
         />
         <button onClick={() => handleUsernameChange(usernameT)}>Update Username</button>
+               <h1 className="text-3xl font-bold my-4">Statistics </h1>
+               <div> Total Plays - {totalplays} </div>
+               <div> Total Finishes - {totalfinishes} </div>
       </main>
     </div>
   );

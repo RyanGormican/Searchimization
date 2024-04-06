@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Icon } from '@iconify/react';
 import Header from './Header';
 import '/src/app/globals.css';
+
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -66,28 +67,34 @@ export default function Home() {
 
   // Effect to listen for changes in user authentication state
   useEffect(() => {
+    const fetchData = async (user: User) => {
+      // Check if searchimization already exists in local storage
+      const existingSearchimization = localStorage.getItem('searchimization');
+      let userName = '';
+      let totalPlays = 0;
+      let totalFinishes = 0;
+      if (!existingSearchimization) {
+        // Retrieve user document
+        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          // Grab the fields
+          userName = userData.username;
+          totalPlays = userData.totalplays;
+          totalFinishes = userData.totalfinishes;
+          localStorage.setItem('searchimization', JSON.stringify({ profile: { username: userName , totalplays: totalPlays, totalfinishes: totalFinishes}, entries: [] }));
+        } else {
+          await setDoc(userDocRef, { username: '' });
+          localStorage.setItem('searchimization', JSON.stringify({ profile: { username: '' }, entries: [] }));
+        }
+      }
+    };
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-
-        // Check if searchimization already exists in local storage
-        const existingSearchimization = localStorage.getItem('searchimization');
-        let userName = '';
-
-        if (!existingSearchimization) {
-          // Retrieve user document
-          const userDocRef = doc(firestore, 'users', user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            // Grab the userName field
-            userName = userData.username;
-            localStorage.setItem('searchimization', JSON.stringify({ profile: { username: userName }, entries: [] }));
-          } else {
-            await setDoc(userDocRef, { username: '' });
-            localStorage.setItem('searchimization', JSON.stringify({ profile: { username: '' }, entries: [] }));
-          }
-        }
+        await fetchData(user);
       } else {
         setUser(null);
       }
@@ -96,6 +103,7 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
+
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={user} />
@@ -103,11 +111,11 @@ export default function Home() {
       {!user && (
         <div className="text-center">
           <button onClick={() => setShowModal(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
-            <Icon icon="ic:outline-email" height="30"/>
-            <span>Sign in with Email</span>
+            <Icon icon="ic:outline-email" height="30"width="30"/>
+            <span className="ml-2">Sign in with Email</span>
           </button>
           <button onClick={signInGoogle} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
-            <Icon icon="devicon:google" height="30" />
+            <Icon icon="devicon:google" height="30" width="30" />
             <span className="ml-2">Sign in with Google</span>
           </button>
         </div>
