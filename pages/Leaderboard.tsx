@@ -11,7 +11,15 @@ interface LeaderboardUser {
   username: string;
   totalfinishes: number;
 }
+// Define SearchimizationData type
+interface SearchimizationData {
+  profile: {
+    username: string;
+    totalplays: number; 
+    totalfinishes: number;
+  };
 
+}
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
 
