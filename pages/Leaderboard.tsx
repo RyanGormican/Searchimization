@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '../src/app/Header';
 import { auth, firestore } from '../src/app/firebase';
-import { collection, getDoc, setDoc, where, query, doc, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, getDoc, setDoc, where, query, doc, getDocs, updateDoc, orderBy, limit } from 'firebase/firestore';
 import '/src/app/globals.css';
 import { Icon } from '@iconify/react';
 
@@ -17,6 +17,39 @@ const Leaderboard: React.FC = () => {
 
   // Fetch leaderboard data when mounted
   useEffect(() => {
+  // Update local session values for user
+    const updateSessionValues = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    const userId = currentUser.uid;
+    const userDocRef = doc(firestore, 'users', userId);
+
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+      const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+
+      const newTotalplays = (userData.totalplays || 0) + sessionplays;
+      const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+
+      // Update the document with incremented values
+      await updateDoc(userDocRef, {
+        totalplays: newTotalplays,
+        totalfinishes: newTotalfinishes
+      });
+
+          // Update local storage 
+      searchimizationData.profile.sessionplays = 0;
+      searchimizationData.profile.sessionfinishes = 0;
+      searchimizationData.profile.totalfinishes = newTotalfinishes;
+      searchimizationData.profile.totalplays = newTotalplays;
+      localStorage.setItem('searchimization', JSON.stringify(searchimizationData));
+    }
+  };
+
     const fetchLeaderboard = async () => {
       const leaderboardRef = collection(firestore, 'users');
       const leaderboardQuery = query(leaderboardRef, orderBy('totalfinishes', 'desc'), limit(10)); // Grab the 10 users with the highest total finishes
@@ -24,7 +57,8 @@ const Leaderboard: React.FC = () => {
       const leaderboardData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as LeaderboardUser));
       setLeaderboard(leaderboardData);
     };
-
+    
+    updateSessionValues();
     fetchLeaderboard();
   }, []);
 

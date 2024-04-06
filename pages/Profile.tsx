@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '../src/app/Header';
 import { auth, firestore } from '../src/app/firebase';
-import { collection, getDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; 
+import { collection, getDoc,updateDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; 
 import '/src/app/globals.css';
 
 // Define SearchimizationData type
@@ -22,6 +22,40 @@ const Profile: React.FC = () => {
   const [totalplays, setTotalPlays] = useState(0);
   const [totalfinishes, setTotalFinishes] = useState(0);
   useEffect(() => {
+  const updateSessionValues = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    const userId = currentUser.uid;
+    const userDocRef = doc(firestore, 'users', userId);
+
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+      const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+
+      const newTotalplays = (userData.totalplays || 0) + sessionplays;
+      const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+
+      // Update the document with incremented values
+      await updateDoc(userDocRef, {
+        totalplays: newTotalplays,
+        totalfinishes: newTotalfinishes
+      });
+
+      // Update local storage 
+      searchimizationData.profile.sessionplays = 0;
+      searchimizationData.profile.sessionfinishes = 0;
+      searchimizationData.profile.totalfinishes = newTotalfinishes;
+      searchimizationData.profile.totalplays = newTotalplays;
+      localStorage.setItem('searchimization', JSON.stringify(searchimizationData));
+    }
+  };
+
+
+
     const fetchData = async () => {
       const unsubscribe = auth.onAuthStateChanged(async user => {
         if (!user) {
@@ -37,7 +71,7 @@ const Profile: React.FC = () => {
 
       return () => unsubscribe();
     };
-
+    updateSessionValues();
     fetchData();
   }, [router]);
 
