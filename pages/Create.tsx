@@ -17,6 +17,7 @@ interface SearchimizationData {
     sessionfinishes: number;
   };
 
+}
 
 const Create = () => {
   // Ref for the grid
