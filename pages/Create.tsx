@@ -202,7 +202,7 @@ const uploadPuzzle = async () => {
 
     // Increment values
     const updatedPuzzleCount = puzzleCount + 1;
-    const updatedDocumentCount = DocumentCount + 1;
+    const updatedDocumentCount = documentCount + 1;
 
     // Construct the puzzle object
     const puzzleData = {
