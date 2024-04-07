@@ -39,7 +39,7 @@ const fetchPuzzles = async () => {
       // If there are no entries in storage, fetch the latest 9 puzzles
       const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
       const puzzles = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
+        puzzleId: doc.id,
         ...doc.data()
       })) as Puzzle[];
 
@@ -54,7 +54,7 @@ const fetchPuzzles = async () => {
         const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
 
         const newPuzzles = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
+          puzzleId: doc.id,
           ...doc.data()
         })) as Puzzle[];
 
@@ -94,7 +94,7 @@ const fetchPuzzles = async () => {
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={auth.currentUser} />
-      <span> Community Puzzles </span>
+      <h1> Community Puzzles </h1>
       <div className="flex justify-center mt-4">
  <Icon onClick={playRandom} icon="ion:dice" width="50" />
       </div>
@@ -102,16 +102,16 @@ const fetchPuzzles = async () => {
       <div className="grid grid-cols-3 gap-4">
         {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
-          <Link key={puzzle.id} href={`/Play/${puzzle.id}`}>
+        <Link key={puzzle.puzzleId} href={`/Play/${encodeURIComponent(puzzle.puzzleId)}`}>
             <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
-              <button>{puzzle.theme}</button>
+              <p>{puzzle.theme}</p>
               <div className="flex">
                 <Icon icon="mdi:play" width="20" /> {puzzle.plays}
-                <Icon icon="mdi:heart" width="20" /> {puzzle.likes}
+               <div style={{display:'none'}}> <Icon icon="mdi:heart" width="20"/> {puzzle.likes} </div>
                 <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
               </div>
               <div className="flex">
-                <Icon icon="mdi:user" width="20" /> {puzzle.userName}
+                <Icon icon="mdi:user" width="20" /> <p> {puzzle.userName} </p>
               </div>
             </div>
           </Link>

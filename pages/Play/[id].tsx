@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { collection, doc, getDoc, updateDoc, increment, DocumentData } from 'firebase/firestore';
 import { auth, firestore } from '../../src/app/firebase';
-
+import Header from '../../src/app/Header';
 // Interface for each grid item
 interface GridItem {
   letter: string;
@@ -78,7 +78,6 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
           plays: increment(1),
           lastupdated: new Date().toISOString()
         });
-
         return;
       }
     }
@@ -209,36 +208,13 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
-         <Link href="/">
-        <div className="text-3xl font-bold mb-4">Searchimization</div>
-      </Link>
-      <div className="flex">
-        <div className="links">
-          <a href="https://www.linkedin.com/in/ryangormican/">
-            <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
-          </a>
-          <a href="https://github.com/RyanGormican/Searchimization">
-            <Icon icon="mdi:github" color="#e8eaea" width="60" />
-          </a>
-          <a href="https://ryangormicanportfoliohub.vercel.app/">
-            <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
-          </a>
-        </div>
-        <div>
-          <Link href="/Puzzles">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
-          </Link>
-        </div>
-        <div>
-          <Link href="/Create">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
-          </Link>
-        </div>
-      </div>
-      <div className="flex flex-col mb-8">
-        <div className="font-bold mb-4 ">Your Theme</div>
-        <div>{theme && theme.theme}</div>
-        <div>{foundWords} of {maxGroup} theme words found</div>
+          <Header currentUser={auth.currentUser} />
+      <div className="flex flex-col mb-4">
+        <h1 className="font-bold">Your Theme</h1>
+        <p className="mb-4">{theme && theme.theme}</p>
+        <h2>
+        <p>{foundWords} of {maxGroup} theme words found</p>
+        </h2>
         <div style={{ minHeight: "50px", maxHeight: "50px" }}>
           {selectedLetters.length > 0 && (
             <div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, firestore } from './firebase';
 import { getDocs, collection, query, where, limit, doc, getDoc } from 'firebase/firestore';
-import { useRouter } from 'next/router';
+
 
 export const playRandom = async () => {
   try {

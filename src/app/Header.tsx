@@ -18,6 +18,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ currentUser }) => {
+
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [name, setName] = useState<string>('');
   const [suggestion, setSuggestion] = useState<string>('');
@@ -91,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
 
   return (
     <header className="flex justify-between items-center p-12 flex-col">
-      <Link href="/">
+      <Link href="/Home">
         <div className="text-3xl font-bold mb-4 title">Searchimization</div>
       </Link>
       <div className="links">
