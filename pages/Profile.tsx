@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
       return () => unsubscribe();
     };
   const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-  if (searchimizationData.sessionplays !== 0 )
+  if (searchimizationData.profile.sessionplays !== 0)
   {
     updateSessionValues();
   }
