@@ -7,7 +7,7 @@ import '/src/app/globals.css';
 import { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import Header from '../src/app/Header';
-
+import {playRandom} from './Random'
 interface Puzzle {
   id: string;
   theme: string;
@@ -96,7 +96,7 @@ const fetchPuzzles = async () => {
       <Header currentUser={auth.currentUser} />
       <span> Community Puzzles </span>
       <div className="flex justify-center mt-4">
-  
+ <Icon onClick={playRandom} icon="ion:dice" width="20" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">

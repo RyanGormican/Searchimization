@@ -6,7 +6,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Icon } from '@iconify/react';
 import Header from './Header';
 import '/src/app/globals.css';
-
+import {playRandom} from './Random'
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -120,6 +120,11 @@ export default function Home() {
           </button>
         </div>
       )}
+      {user &&
+      <div className="text-center">
+           <Icon onClick={playRandom} icon="ion:dice" width="180" />
+      </div>
+      }
       {/* Modal for sign-in and sign-up */}
       {showModal && (
         <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-50">

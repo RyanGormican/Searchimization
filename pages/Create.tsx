@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react';
 import { auth, firestore } from '../src/app/firebase';
 import { signOut, User } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, getDoc, updateDoc, doc } from 'firebase/firestore';
 import Header from '../src/app/Header';
 interface SearchimizationData {
   profile: {
@@ -185,12 +185,27 @@ const Create = () => {
   };
 
   // Upload puzzle handler
-  const uploadPuzzle = async () => {
-  try {
-  // Retrieve username from local storage
-const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+ import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 
-const username = searchimizationData.profile.username;
+const uploadPuzzle = async () => {
+  try {
+    // Fetch document from 'count' collection
+    const countDocRef = doc(firestore, 'count', 'DocumentCount');
+    const countDocSnap = await getDoc(countDocRef);
+
+    if (!countDocSnap.exists()) {
+      throw new Error('Count document does not exist.');
+    }
+
+    const countData = countDocSnap.data();
+
+    // Extract values from count document
+    let { puzzleCount, documentCount } = countData;
+
+    // Increment values
+    const updatedPuzzleCount = puzzleCount + 1;
+    const updatedDocumentCount = DocumentCount + 1;
+
     // Construct the puzzle object
     const puzzleData = {
       theme: name,
@@ -202,14 +217,23 @@ const username = searchimizationData.profile.username;
       finishes: 0,
       timecreated: new Date().toISOString(),
       lastupdated: new Date().toISOString(),
+      type: 'wordsearch',
+      id: updatedPuzzleCount 
     };
 
     // Add puzzle data to 'puzzles' collection
     await addDoc(collection(firestore, 'puzzles'), puzzleData);
 
+    // Update count document with incremented values
+    await updateDoc(countDocRef, {
+      puzzleCount: updatedPuzzleCount,
+      documentCount: updatedDocumentCount
+    });
+
     router.push('/Puzzles');
   } catch (error) {
     console.error('Error uploading puzzle:', error);
+    // Handle error, e.g., display error message to the user
   }
 };
 
