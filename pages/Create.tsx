@@ -184,8 +184,6 @@ const Create = () => {
     });
   };
 
-  // Upload puzzle handler
- import { collection, addDoc, updateDoc, doc, getDoc } from 'firebase/firestore';
 
 const uploadPuzzle = async () => {
   try {

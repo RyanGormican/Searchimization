@@ -7,7 +7,7 @@ import '/src/app/globals.css';
 import { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import Header from '../src/app/Header';
-import {playRandom} from './Random'
+import {playRandom} from '../src/app/Random'
 interface Puzzle {
   id: string;
   theme: string;
