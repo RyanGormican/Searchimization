@@ -53,3 +53,24 @@ body {
     left: 5px;
     z-index:10;
 }
+
+.title{
+  font-family: "Bubblegum Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+h1{
+  font-family: "Doppio One", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+button{
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+p{
+  font-family: "Lato", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}

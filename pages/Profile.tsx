@@ -4,7 +4,7 @@ import Header from '../src/app/Header';
 import { auth, firestore } from '../src/app/firebase';
 import { collection, getDoc,updateDoc, setDoc, where, query, doc, getDocs, writeBatch } from 'firebase/firestore'; 
 import '/src/app/globals.css';
-
+import { Icon } from '@iconify/react';
 // Define SearchimizationData type
 interface SearchimizationData {
   profile: {
@@ -73,7 +73,11 @@ const Profile: React.FC = () => {
 
       return () => unsubscribe();
     };
+  const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+  if (searchimizationData.sessionplays !== 0 )
+  {
     updateSessionValues();
+  }
     fetchData();
   }, [router]);
 
@@ -82,7 +86,7 @@ const handleUsernameChange = async (newUsername: string) => {
     if (!auth.currentUser) {
       return;
     }
-
+ 
     // Update the username in the user document
     const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
     await setDoc(userDocRef, { username: newUsername });
@@ -126,17 +130,20 @@ if (storageData) {
       <Header currentUser={auth.currentUser} />
       <main className="flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold my-4">Username </h1>
+        <div className="flex">
         <input
           type="text"
           value={usernameT}
           onChange={(e) => setUsername(e.target.value)}
           onBlur={(e) => handleUsernameChange(e.target.value)}
         />
-        <button onClick={() => handleUsernameChange(usernameT)}>Update Username</button>
+           <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" onClick={() => handleUsernameChange(usernameT)}>Update Username</button>
+        </div>
                <h1 className="text-3xl font-bold my-4">Statistics </h1>
-               <div> Total Plays - {totalplays} </div>
-               <div> Total Finishes - {totalfinishes} </div>
-      </main>
+               <div className="flex text-lg">    <Icon icon="mdi:play" width="20" /> Total Plays:  {totalplays} </div>
+               <div className="flex text-lg">    <Icon icon="material-symbols:flag" width="20" /> Total Finishes:  {totalfinishes} </div>
+
+        </main>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react';
 import Header from './Header';
 import '/src/app/globals.css';
 import {playRandom} from './Random'
+
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -105,6 +106,7 @@ export default function Home() {
 
 
   return (
+
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={user} />
       {/* Render sign in buttons */}
@@ -159,6 +161,7 @@ export default function Home() {
           </div>
         </div>
       )}
+
     </main>
   );
 }

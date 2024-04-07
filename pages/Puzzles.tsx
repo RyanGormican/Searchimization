@@ -96,7 +96,7 @@ const fetchPuzzles = async () => {
       <Header currentUser={auth.currentUser} />
       <span> Community Puzzles </span>
       <div className="flex justify-center mt-4">
- <Icon onClick={playRandom} icon="ion:dice" width="20" />
+ <Icon onClick={playRandom} icon="ion:dice" width="50" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
