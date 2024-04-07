@@ -11,8 +11,12 @@ import Header from '../src/app/Header';
 interface SearchimizationData {
   profile: {
     username: string;
-  }
-}
+    totalplays: number; 
+    totalfinishes: number;
+    sessionplays: number;
+    sessionfinishes: number;
+  };
+
 
 const Create = () => {
   // Ref for the grid
@@ -23,6 +27,8 @@ const Create = () => {
 
   // State for puzzle name
   const [name, setName] = useState('My Puzzle');
+  // State for username
+    const [username, setUsername] = useState('');
   // State of user
   const [currentUser, setCurrentUser] =useState<User | null>(null);
   // State for groupings
@@ -137,6 +143,8 @@ const Create = () => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
       setCurrentUser(user);
+     const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+     setUsername(storageData.profile.username);
       } else {
         router.push('/'); 
       }
