@@ -38,10 +38,12 @@ const fetchPuzzles = async () => {
     if (puzzlesFromStorage && puzzlesFromStorage.entries.length === 0) {
       // If there are no entries in storage, fetch the latest 9 puzzles
       const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
-      const puzzles = querySnapshot.docs.map((doc) => ({
-        puzzleId: doc.id,
-        ...doc.data()
-      })) as Puzzle[];
+  const puzzles = querySnapshot.docs.map((doc) => ({
+  id: doc.id,
+  ...doc.data(),
+  puzzleId: doc.id
+})) as Puzzle[];
+
 
       localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: puzzles }));
       setPuzzleList(puzzles);
@@ -54,8 +56,9 @@ const fetchPuzzles = async () => {
         const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
 
         const newPuzzles = querySnapshot.docs.map((doc) => ({
-          puzzleId: doc.id,
-          ...doc.data()
+        id: doc.id,
+  ...doc.data(),
+  puzzleId: doc.id
         })) as Puzzle[];
 
         if (newPuzzles.length > 0) {
