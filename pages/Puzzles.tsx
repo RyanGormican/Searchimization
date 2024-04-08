@@ -10,6 +10,7 @@ import Header from '../src/app/Header';
 import {playRandom} from '../src/app/Random'
 interface Puzzle {
   id: string;
+  puzzleId: string;
   theme: string;
   plays: number;
   likes: number;
@@ -39,7 +40,7 @@ const fetchPuzzles = async () => {
       // If there are no entries in storage, fetch the latest 9 puzzles
       const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
 const puzzles = querySnapshot.docs.map((doc) => ({
-  id: doc.id, 
+  puzzleId: doc.id, 
   ...doc.data(),
 })) as Puzzle[];
 
@@ -54,7 +55,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
         const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
 
         const newPuzzles = querySnapshot.docs.map((doc) => ({
-  id: doc.id, 
+  puzzleId: doc.id, 
   ...doc.data(),
 })) as Puzzle[];
 
