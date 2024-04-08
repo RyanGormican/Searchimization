@@ -88,6 +88,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
 
   useEffect(() => {
     fetchPuzzles();
+
   }, []);
 
 
@@ -103,7 +104,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
       <div className="grid grid-cols-3 gap-4">
         {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
-        <Link key={puzzle.puzzleId} href={`/Play/${encodeURIComponent(puzzle.puzzleId)}`}>
+        <Link key={puzzle.puzzleId} href={`/Play/${puzzle.puzzleId}`}>
             <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
               <p>{puzzle.theme}</p>
               <div className="flex">
