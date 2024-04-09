@@ -75,7 +75,7 @@ const Play = () => {
       console.error("Invalid timer start or end time.");
     }
   };
-
+useEffect(()=> {
   // Function to fetch puzzle data from Firestore
   const fetchPuzzleData = async () => {
   try {
