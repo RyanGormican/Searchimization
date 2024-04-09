@@ -55,6 +55,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
 
         // Sign out the user
         await signOut(auth);
+        window.location.href = '/Home';
       }
     }
   } catch (error) {

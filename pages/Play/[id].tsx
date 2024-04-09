@@ -51,10 +51,12 @@ const Play = () => {
     if (startTime && currentTime > startTime) {
       const elapsedTime = currentTime - startTime;
       setEndTime(currentTime);
-      if (auth.currentUser) {
-        const user = auth.currentUser;
-        const timeData = { time: elapsedTime, username: user.displayName ?? user.email, userId: user.uid };
+   // Grab username from local storage
+    const storageData = localStorage.getItem('searchimization');
+    const username = storageData ? JSON.parse(storageData)?.profile?.username : '';
 
+    if (auth.currentUser) {
+      const timeData = { time: elapsedTime, username: username || 'Unknown', userId: auth.currentUser.uid };
         // Update fast times in Firestore
         const puzzleRef = doc(firestore, 'puzzles', id as string);
         const puzzleDoc = await getDoc(puzzleRef);
@@ -63,7 +65,10 @@ const Play = () => {
 
         const updatedFastTimes = [...currentFastTimes, timeData].sort((a, b) => a.time - b.time).slice(0, 10);
 
-        await updateDoc(puzzleRef, { fastTimes: updatedFastTimes });
+        await updateDoc(puzzleRef, { fastTimes: updatedFastTimes, 
+        finishes: increment(1),
+        lastupdated: new Date().toISOString()
+        });
         setFastTimes(updatedFastTimes);
       }
     } else {
@@ -73,18 +78,59 @@ const Play = () => {
 
   // Function to fetch puzzle data from Firestore
   const fetchPuzzleData = async () => {
-    try {
-      if (!id) return;
+  try {
+    if (!id) return;
 
-      const puzzleDocRef = doc(firestore, 'puzzles', id as string);
-      const puzzleDoc = await getDoc(puzzleDocRef);
-      const puzzleData = puzzleDoc.data() as PuzzleData;
-      setTheme(puzzleData);
-      setGridContent(puzzleData.gridContent);
-    } catch (error) {
-      console.error('Error fetching puzzle data:', error);
+    // Check if puzzle data exists in local storage
+const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+
+    if (searchimizationData && searchimizationData.entries) {
+const puzzleFromStorage = searchimizationData.entries.find((entry: SearchimizationEntry) => entry.id === id);
+      if (puzzleFromStorage) {
+        setTheme(puzzleFromStorage);
+        setGridContent(puzzleFromStorage.gridContent); 
+            const updatedProfile = {
+              ...searchimizationData.profile,
+              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1
+            };
+            localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
+
+        // Increment plays count and update last updated timestamp
+        const puzzleDocRef = doc(firestore, 'puzzles', id as string);
+        await updateDoc(puzzleDocRef, {
+          plays: increment(1),
+          lastupdated: new Date().toISOString()
+        });
+        return;
+      }
     }
-  };
+
+    // Fetch puzzle data from Firestore if not found in local storage
+    const puzzleDocRef = doc(firestore, 'puzzles', id as string);
+    const puzzleDoc = await getDoc(puzzleDocRef);
+    const puzzleData = puzzleDoc.data() as PuzzleData;
+    setTheme(puzzleData);
+    setGridContent(puzzleData.gridContent); // Set grid content state
+
+    // Save puzzle data to local storage
+    const updatedEntries: SearchimizationEntry[] = searchimizationData.entries.map((entry: SearchimizationEntry) => entry.id === id ? puzzleData : entry);
+    localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
+
+    // Increment plays count and update last updated timestamp
+    await updateDoc(puzzleDocRef, {
+      plays: increment(1),
+      lastupdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching puzzle data:', error);
+  }
+};
+
+
+
+    fetchPuzzleData();
+
+  }, [id]);
 
   // Event handler for mouse up
   const handleMouseUp = () => {

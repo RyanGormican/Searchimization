@@ -16,7 +16,8 @@ interface Puzzle {
   likes: number;
   finishes: number;
   userName: string;
-  lastupdated: string; 
+  lastupdated: string;
+  fastTimes?: Array<{ time: number; username: string; userId: string }>; 
 }
 
 const Puzzles: React.FC = () => {
@@ -25,6 +26,7 @@ const Puzzles: React.FC = () => {
   const [sortBy, setSortBy] = useState<string>('theme'); // Default sorting by theme
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
   const [filteredPuzzleList, setFilteredPuzzleList] = useState<Puzzle[]>([]); // State to store filtered puzzle list
+  const [hoveredPuzzleId, setHoveredPuzzleId] = useState<string | null>(null); // State variable to store the ID of the hovered puzzle
 
   // Function to fetch puzzles
 const fetchPuzzles = async () => {
@@ -91,32 +93,61 @@ const puzzles = querySnapshot.docs.map((doc) => ({
 
   }, []);
 
+// Function to convert time to a human-readable format
+const convertTime = (time: number): string => {
+  // Convert milliseconds to minutes, seconds, and milliseconds
+  const minutes = Math.floor(time / 60000);
+  const seconds = Math.floor((time % 60000) / 1000);
+  const milliseconds = Math.floor(time % 1000);
 
+  // Format the time as "Minutes:Seconds:Milliseconds"
+  return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(3, '0')}`;
+};
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={auth.currentUser} />
       <h1> Community Puzzles </h1>
       <div className="flex justify-center mt-4">
- <Icon onClick={playRandom} icon="ion:dice" width="50" />
+        <Icon onClick={playRandom} icon="ion:dice" width="50" />
       </div>
-
       <div className="grid grid-cols-3 gap-4">
         {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
-        <Link key={puzzle.puzzleId} href={`/Play/${puzzle.puzzleId}`}>
-            <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
-              <p>{puzzle.theme}</p>
-              <div className="flex">
-                <Icon icon="mdi:play" width="20" /> {puzzle.plays}
-               <div style={{display:'none'}}> <Icon icon="mdi:heart" width="20"/> {puzzle.likes} </div>
-                <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
+          <div
+            key={puzzle.puzzleId}
+            className="relative"
+            onMouseEnter={() => setHoveredPuzzleId(puzzle.puzzleId)}
+            onMouseLeave={() => setHoveredPuzzleId(null)}
+          >
+            <Link href={`/Play/${puzzle.puzzleId}`}>
+              <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
+                <p>{puzzle.theme}</p>
+                <div className="flex">
+                  <Icon icon="mdi:play" width="20" /> {puzzle.plays}
+                  <div style={{ display: 'none' }}>
+                    <Icon icon="mdi:heart" width="20" /> {puzzle.likes}{' '}
+                  </div>
+                  <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
+                </div>
+                <div className="flex">
+                  <Icon icon="mdi:user" width="20" /> <p> {puzzle.userName} </p>
+                </div>
               </div>
-              <div className="flex">
-                <Icon icon="mdi:user" width="20" /> <p> {puzzle.userName} </p>
+            </Link>
+            {/* Display top 10 times when hovering over the puzzle */}
+            {hoveredPuzzleId === puzzle.puzzleId && puzzle.fastTimes && (
+              <div className="absolute top-0 left-0 bg-white p-4 rounded shadow-md">
+                <h3 className="font-semibold mb-2">{puzzle.theme}</h3>
+                {puzzle.fastTimes.map((time, index) => (
+                  <div key={index} className="mb-1">
+                    <span>{index + 1}. </span>
+                    <span>{time.username}: {convertTime(time.time)}</span>
+                  </div>
+                ))}
               </div>
-            </div>
-          </Link>
+            )}
+          </div>
         ))}
       </div>
     </main>
