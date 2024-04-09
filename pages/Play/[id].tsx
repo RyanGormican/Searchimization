@@ -18,7 +18,10 @@ interface PuzzleData {
   theme: string;
   gridContent: GridItem[];
 }
-
+// Interface for local storage
+interface SearchimizationEntry {
+  id: string;
+}
 // Define the main component
 const Play = () => {
   // Access router and query parameters
