@@ -67,7 +67,7 @@ const Play = () => {
         const currentFastTimes = puzzleData?.fastTimes || [];
 
         const updatedFastTimes = [...currentFastTimes, timeData].sort((a, b) => a.time - b.time).slice(0, 10);
-
+const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
         await updateDoc(puzzleRef, { fastTimes: updatedFastTimes, 
         finishes: increment(1),
         lastupdated: new Date().toISOString()
