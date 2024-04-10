@@ -57,13 +57,13 @@ const Play = () => {
    // Grab username from local storage
     const storageData = localStorage.getItem('searchimization');
     const username = storageData ? JSON.parse(storageData)?.profile?.username : '';
-
-    if (auth.currentUser) {
-      const timeData = { time: elapsedTime, username: username || 'Unknown', userId: auth.currentUser.uid };
-        // Update fast times in Firestore
         const puzzleRef = doc(firestore, 'puzzles', id as string);
         const puzzleDoc = await getDoc(puzzleRef);
         const puzzleData = puzzleDoc.data();
+    if (auth.currentUser) {
+      const timeData = { time: elapsedTime, username: username || 'Unknown', userId: auth.currentUser.uid };
+        // Update fast times in Firestore
+     
         const currentFastTimes = puzzleData?.fastTimes || [];
 
         const updatedFastTimes = [...currentFastTimes, timeData].sort((a, b) => a.time - b.time).slice(0, 10);
@@ -73,7 +73,20 @@ const Play = () => {
         lastupdated: new Date().toISOString()
         });
         setFastTimes(updatedFastTimes);
-      }
+         const updatedProfile = {
+              ...searchimizationData.profile,
+              sessionfinishes: (searchimizationData.profile.sessionfinishes || 0) + 1
+            };
+            localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
+      } else
+    {
+  await updateDoc(puzzleRef, { 
+        finishes: increment(1),
+        lastupdated: new Date().toISOString()
+        });
+    }
+
+      
     } else {
       console.error("Invalid timer start or end time.");
     }
@@ -118,6 +131,11 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
     // Save puzzle data to local storage
     const updatedEntries: SearchimizationEntry[] = searchimizationData.entries.map((entry: SearchimizationEntry) => entry.id === id ? puzzleData : entry);
     localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
+        const updatedProfile = {
+              ...searchimizationData.profile,
+              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1
+            };
+            localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
     // Increment plays count and update last updated timestamp
     await updateDoc(puzzleDocRef, {
