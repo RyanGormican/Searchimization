@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import { auth, firestore } from  '../src/app/firebase';
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, User, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import React, { useState, useEffect } from "react";
+import { auth, firestore } from '../src/app/firebase';
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, User, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Icon } from '@iconify/react';
-import Header from  '../src/app/Header';
+import Header from '../src/app/Header';
 import '/src/app/globals.css';
-import {playRandom} from'../src/app/Random';
+import { playRandom } from '../src/app/Random';
 import PasswordStrengthMeter from '../src/app/PasswordStrengthMeter';
+
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -17,6 +18,7 @@ export default function Home() {
   // State for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state for password confirmation
   // State for sign-up mode
   const [signUpMode, setSignUpMode] = useState(false);
   // Google authentication provider
@@ -51,9 +53,13 @@ export default function Home() {
     try {
       // Clear previous error message
       setError("");
-      // Validate email and password format
-      if (!email || !password) {
-        setError("Please enter both email and password.");
+      // Validate email, password, and password confirmation
+      if (!email || !password || !confirmPassword) {
+        setError("Please enter email, password, and confirm password.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Password and confirm password do not match.");
         return;
       }
       // Attempt sign-up
@@ -83,7 +89,7 @@ export default function Home() {
           userName = userData.username;
           totalPlays = userData.totalplays;
           totalFinishes = userData.totalfinishes;
-          localStorage.setItem('searchimization', JSON.stringify({ profile: { username: userName , totalplays: totalPlays, totalfinishes: totalFinishes}, entries: [] }));
+          localStorage.setItem('searchimization', JSON.stringify({ profile: { username: userName, totalplays: totalPlays, totalfinishes: totalFinishes }, entries: [] }));
         } else {
           await setDoc(userDocRef, { username: '' });
           localStorage.setItem('searchimization', JSON.stringify({ profile: { username: '' }, entries: [] }));
@@ -103,9 +109,7 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-
   return (
-
     <main className="flex min-h-screen items-center p-12 flex-col">
       {/* Buttons to logout, acess feedback mechanism, and view pages of Create, Leaderboard, Profile, and Puzzles */}
       <Header currentUser={user} />
@@ -113,7 +117,7 @@ export default function Home() {
       {!user && (
         <div className="text-center">
           <button onClick={() => setShowModal(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
-            <Icon icon="ic:outline-email" height="30"width="30"/>
+            <Icon icon="ic:outline-email" height="30" width="30" />
             <span className="ml-2">Sign in with Email</span>
           </button>
           <button onClick={signInGoogle} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  flex items-center">
@@ -123,14 +127,13 @@ export default function Home() {
         </div>
       )}
       {user &&
-
-      <div className="text-center">
-           <Icon onClick={playRandom} icon="ion:dice" width="180" />
-      </div>
+        <div className="text-center">
+          <Icon onClick={playRandom} icon="ion:dice" width="180" />
+        </div>
       }
       {/* Modal for sign-in and sign-up */}
       {showModal && (
-       <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+        <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative bg-white rounded-lg shadow-lg">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -139,7 +142,7 @@ export default function Home() {
                 </h3>
                 <button type="button" onClick={() => setShowModal(false)} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
                   <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                   </svg>
                   <span className="sr-only">Close modal</span>
                 </button>
@@ -147,23 +150,26 @@ export default function Home() {
               <div className="p-4 md:p-5 space-y-4">
                 {/* Sign-in/sign-up form */}
                 <form onSubmit={(e) => { e.preventDefault(); signUpMode ? signUpWithEmail() : signInWithEmail(); }}>
+                  {error}
                   <div>
-                  <div>
-                  Email
+                    <div>Email</div>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                   </div>
-                  <input type="email"  value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                  </div>
                   <div>
-                  <div>
-                  Password
-                  </div>
+                    <div>Password</div>
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                  {signUpMode && password.length > 0 &&
-                  <div>
-                   Password Strength  <PasswordStrengthMeter password={password} />
                   </div>
-                  }
-                  </div>
+                  {signUpMode && (
+                    <div>
+                      <div>Confirm Password</div>
+                      <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    </div>
+                  )}
+                  {signUpMode && password.length > 0 && (
+                    <div>
+                      Password Strength <PasswordStrengthMeter password={password} />
+                    </div>
+                  )}
                   <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
                     <span>{signUpMode ? "Sign Up" : "Sign In"}</span>
                   </button>
@@ -177,7 +183,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
     </main>
   );
 }
