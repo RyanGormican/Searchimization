@@ -102,23 +102,42 @@ const handleUsernameChange = async (newUsername: string) => {
       batch.update(puzzleDocRef, { userName: newUsername, lastupdated: currentTime });
     });
 
+    // Update the username in all "puzzles" documents where the userId matches the authenticated user's ID in the fastTimes field
+    const fastTimesQuery = query(collection(firestore, 'puzzles'), where('fastTimes', 'array-contains', { userId: auth.currentUser.uid }));
+    const fastTimesSnapshot = await getDocs(fastTimesQuery);
+
+    fastTimesSnapshot.forEach((doc) => {
+      const puzzleDocRef = doc.ref;
+      const fastTimes = doc.data().fastTimes;
+      const updatedFastTimes = fastTimes.map((entry: any) => {
+        if (entry.userId === auth.currentUser.uid) {
+          return { ...entry, username: newUsername };
+        } else {
+          return entry;
+        }
+      });
+
+      batch.update(puzzleDocRef, { fastTimes: updatedFastTimes, lastupdated: currentTime });
+    });
+
     await batch.commit();
 
     // Update local state
     setUsername(newUsername);
 
     // Update local storage
-const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-if (storageData) {
-  // No need to parse storageData again, it's already an object
-  storageData.profile.username = newUsername;
-  localStorage.setItem('searchimization', JSON.stringify(storageData));
-}
+    const storageData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+    if (storageData) {
+      // No need to parse storageData again, it's already an object
+      storageData.profile.username = newUsername;
+      localStorage.setItem('searchimization', JSON.stringify(storageData));
+    }
 
   } catch (error) {
     console.error('Error updating username:', error);
   }
 };
+
 
 
   if (loading) {
