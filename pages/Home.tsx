@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react';
 import Header from  '../src/app/Header';
 import '/src/app/globals.css';
 import {playRandom} from'../src/app/Random';
+import PasswordStrengthMeter from '../src/app/PasswordStrengthMeter';
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -106,7 +107,7 @@ export default function Home() {
   return (
 
     <main className="flex min-h-screen items-center p-12 flex-col">
-    
+      {/* Buttons to logout, acess feedback mechanism, and view pages of Create, Leaderboard, Profile, and Puzzles */}
       <Header currentUser={user} />
       {/* Render sign in buttons */}
       {!user && (
@@ -122,13 +123,14 @@ export default function Home() {
         </div>
       )}
       {user &&
+
       <div className="text-center">
            <Icon onClick={playRandom} icon="ion:dice" width="180" />
       </div>
       }
       {/* Modal for sign-in and sign-up */}
       {showModal && (
-        <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-50">
+       <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="fixed top-0 right-0 bottom-0 left-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
           <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative bg-white rounded-lg shadow-lg">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -145,8 +147,23 @@ export default function Home() {
               <div className="p-4 md:p-5 space-y-4">
                 {/* Sign-in/sign-up form */}
                 <form onSubmit={(e) => { e.preventDefault(); signUpMode ? signUpWithEmail() : signInWithEmail(); }}>
-                  <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                  <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                  <div>
+                  <div>
+                  Email
+                  </div>
+                  <input type="email"  value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                  </div>
+                  <div>
+                  <div>
+                  Password
+                  </div>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                  {signUpMode && password.length > 0 &&
+                  <div>
+                   Password Strength  <PasswordStrengthMeter password={password} />
+                  </div>
+                  }
+                  </div>
                   <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
                     <span>{signUpMode ? "Sign Up" : "Sign In"}</span>
                   </button>
