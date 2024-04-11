@@ -49,30 +49,32 @@ export default function Home() {
     }
   };
 
-  // Function to handle user sign up
-  const signUpWithEmail = async () => {
-    try {
-      // Clear previous error message
-      setError("");
-      // Validate email, password, and password confirmation
-      if (!email || !password || !confirmPassword) {
-        setError("Please enter email, password, and confirm password.");
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError("Password and confirm password do not match.");
-        return;
-      }
-      // Attempt sign-up
-      await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(auth.currentUser);
-
-      setShowModal(false);
-    } catch (error: any) {
-      // Handle sign-up error
-      setError(error.message);
+ // Function to handle user sign up
+const signUpWithEmail = async () => {
+  try {
+    // Clear previous error message
+    setError("");
+    // Validate email, password, and password confirmation
+    if (!email || !password || !confirmPassword) {
+      setError("Please enter email, password, and confirm password.");
+      return;
     }
-  };
+    if (password !== confirmPassword) {
+      setError("Password and confirm password do not match.");
+      return;
+    }
+    // Attempt sign-up
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    if (userCredential.user) {
+      await sendEmailVerification(userCredential.user); // Check if user exists before sending verification email
+    }
+    setShowModal(false);
+  } catch (error: any) {
+    // Handle sign-up error
+    setError(error.message);
+  }
+};
+
 
   // Effect to listen for changes in user authentication state
   useEffect(() => {
