@@ -83,17 +83,18 @@ const Profile: React.FC = () => {
 
 const handleUsernameChange = async (newUsername: string) => {
   try {
-    if (!auth.currentUser) {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
       return;
     }
  
     // Update the username in the user document
-    const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+    const userDocRef = doc(firestore, 'users', currentUser.uid);
     await setDoc(userDocRef, { username: newUsername });
     const currentTime = new Date();
 
     // Update the username in all "puzzles" documents where the user is equal to the UID of the authenticated user
-    const userPuzzlesQuery = query(collection(firestore, 'puzzles'), where('user', '==', auth.currentUser.uid));
+    const userPuzzlesQuery = query(collection(firestore, 'puzzles'), where('user', '==', currentUser.uid));
     const userPuzzlesSnapshot = await getDocs(userPuzzlesQuery);
     const batch = writeBatch(firestore);
 
@@ -103,14 +104,14 @@ const handleUsernameChange = async (newUsername: string) => {
     });
 
     // Update the username in all "puzzles" documents where the userId matches the authenticated user's ID in the fastTimes field
-    const fastTimesQuery = query(collection(firestore, 'puzzles'), where('fastTimes', 'array-contains', { userId: auth.currentUser.uid }));
+    const fastTimesQuery = query(collection(firestore, 'puzzles'), where('fastTimes', 'array-contains', { userId: currentUser.uid }));
     const fastTimesSnapshot = await getDocs(fastTimesQuery);
 
     fastTimesSnapshot.forEach((doc) => {
       const puzzleDocRef = doc.ref;
       const fastTimes = doc.data().fastTimes;
       const updatedFastTimes = fastTimes.map((entry: any) => {
-        if (entry.userId === auth.currentUser.uid) {
+        if (entry.userId === currentUser.uid) {
           return { ...entry, username: newUsername };
         } else {
           return entry;
@@ -137,6 +138,7 @@ const handleUsernameChange = async (newUsername: string) => {
     console.error('Error updating username:', error);
   }
 };
+
 
 
 
