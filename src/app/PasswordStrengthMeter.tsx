@@ -1,4 +1,4 @@
-const getPasswordStrength = (password) => {
+const getPasswordStrength = (password: string) => {
   // Define criteria for password strength
   const minLength = 8;
   const hasUppercase = /[A-Z]/.test(password);
@@ -18,7 +18,7 @@ const getPasswordStrength = (password) => {
 };
 
 
-const PasswordStrengthMeter = ({ password }) => {
+const PasswordStrengthMeter = ({ password: string }) => {
   const strength = getPasswordStrength(password);
 
   // Define CSS classes for different password strength levels
