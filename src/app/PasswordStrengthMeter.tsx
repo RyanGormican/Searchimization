@@ -18,8 +18,9 @@ const getPasswordStrength = (password: string) => {
 };
 
 
-const PasswordStrengthMeter = ({ password: string }) => {
+const PasswordStrengthMeter = ({ password }) => {
   const strength = getPasswordStrength(password);
+  
 
   // Define CSS classes for different password strength levels
   const strengthClasses = [
