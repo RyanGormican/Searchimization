@@ -7,6 +7,7 @@ import Header from '../src/app/Header';
 import '/src/app/globals.css';
 import { playRandom } from '../src/app/Random';
 import PasswordStrengthMeter from '../src/app/PasswordStrengthMeter';
+import { sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth';
 
 export default function Home() {
   // State for error message
@@ -64,6 +65,8 @@ export default function Home() {
       }
       // Attempt sign-up
       await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(auth.currentUser);
+
       setShowModal(false);
     } catch (error: any) {
       // Handle sign-up error
@@ -98,7 +101,7 @@ export default function Home() {
     };
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+      if (user && user.emailVerified) {
         setUser(user);
         await fetchData(user);
       } else {
@@ -108,6 +111,24 @@ export default function Home() {
 
     return () => unsubscribe();
   }, []);
+  // Function to handle forgot password
+const forgotPassword = async () => {
+  try {
+    // Clear previous error message
+    setError("");
+    // Validate email format
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+    // Send password reset email
+    await sendPasswordResetEmail(auth, email);
+    setError("Password reset email sent. Please check your inbox.");
+  } catch (error) {
+    // Handle forgot password error
+    setError("Failed to send password reset email. Please try again.");
+  }
+};
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
@@ -170,6 +191,11 @@ export default function Home() {
                       Password Strength <PasswordStrengthMeter password={password} />
                     </div>
                   )}
+                  <div>
+                    <button onClick={forgotPassword} className="text-blue-500 hover:text-blue-700 font-medium">
+                     Forgot Password?
+                    </button>
+                   </div>
                   <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
                     <h1>{signUpMode ? "Sign Up" : "Sign In"}</h1>
                   </button>
