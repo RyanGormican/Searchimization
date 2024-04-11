@@ -1,3 +1,5 @@
+import React from "react";
+
 const getPasswordStrength = (password: string) => {
   // Define criteria for password strength
   const minLength = 8;
@@ -17,11 +19,9 @@ const getPasswordStrength = (password: string) => {
   return score;
 };
 
-
-const PasswordStrengthMeter = ({ password }) => {
+const PasswordStrengthMeter = ({ password }: { password: string }) => {
   const strength = getPasswordStrength(password);
   
-
   // Define CSS classes for different password strength levels
   const strengthClasses = [
     "w-1/5 bg-red-500",
@@ -36,8 +36,9 @@ const PasswordStrengthMeter = ({ password }) => {
 
   return (
     <div className="h-2 bg-gray-200 rounded-md overflow-hidden">
-    <div className={`h-full transition-all duration-500 ${meterClass}`} />
+      <div className={`h-full transition-all duration-500 ${meterClass}`} />
     </div>
   );
 };
+
 export default PasswordStrengthMeter;
