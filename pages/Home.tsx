@@ -71,7 +71,6 @@ export default function Home() {
     }
   };
 
-
   // Effect to listen for changes in user authentication state
   useEffect(() => {
     const fetchData = async (user: User) => {
@@ -153,16 +152,16 @@ export default function Home() {
                 <form onSubmit={(e) => { e.preventDefault(); signUpMode ? signUpWithEmail() : signInWithEmail(); }}>
                   {error}
                   <div>
-                    <div>Email</div>
+                    <h1>Email</h1>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                   </div>
                   <div>
-                    <div>Password</div>
+                    <h1>Password</h1>
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                   </div>
                   {signUpMode && (
                     <div>
-                      <div>Confirm Password</div>
+                      <h1>Confirm Password</h1>
                       <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                     </div>
                   )}
@@ -172,7 +171,7 @@ export default function Home() {
                     </div>
                   )}
                   <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                    <span>{signUpMode ? "Sign Up" : "Sign In"}</span>
+                    <h1>{signUpMode ? "Sign Up" : "Sign In"}</h1>
                   </button>
                 </form>
                 {/* Toggle button for sign-up mode */}
