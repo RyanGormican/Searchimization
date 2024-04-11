@@ -71,6 +71,7 @@ export default function Home() {
     }
   };
 
+
   // Effect to listen for changes in user authentication state
   useEffect(() => {
     const fetchData = async (user: User) => {
