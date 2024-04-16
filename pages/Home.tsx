@@ -24,6 +24,8 @@ export default function Home() {
   const [signUpMode, setSignUpMode] = useState(false);
   // Google authentication provider
   const googleProvider = new GoogleAuthProvider();
+  // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   // Function to sign in with Google
   const signInGoogle = () => {
@@ -108,6 +110,7 @@ const signUpWithEmail = async () => {
         await fetchData(user);
       } else {
         setUser(null);
+        setError("Email not verified. Please check your email.");
       }
     });
 
@@ -181,12 +184,23 @@ const forgotPassword = async () => {
                   </div>
                   <div>
                     <h1>Password</h1>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                  </div>
+                    <input  type={showPassword ? "text" : "password"}  value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                {/* Password visibility toggle */}
+                     <button
+                         className="absolute px-3"
+                        onClick={() => setShowPassword(!showPassword)}
+                        >
+                     {showPassword ? (
+        <Icon icon="bi:eye-slash-fill" height="30"/>
+      ) : (
+        <Icon icon="bi:eye-fill" height="30"/>
+      )}
+    </button>
+                    </div>
                   {signUpMode && (
                     <div>
                       <h1>Confirm Password</h1>
-                      <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                      <input  type={showPassword ? "text" : "password"}   value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                     </div>
                   )}
                   {signUpMode && password.length > 0 && (
