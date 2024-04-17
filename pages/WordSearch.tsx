@@ -232,25 +232,26 @@ const WordSearch = ({
               <th className="py-3 px-6 text-left" style={{ border: '1px solid black' }}>Word</th>
             </tr>
           </thead>
-          <tbody className="text-gray-600 text-sm font-light" style={{ border: '1px solid black' }}>
-            {groupings.map(({ group, letters, color }, index) => (
-              <tr
-                key={group}
-                className={selectedGroup === index ? 'selected-group' : 'group'}
-                onClick={() => handleGroupClick(index)}
-              >
-                <td className={`py-3 px-6 text-left whitespace-nowrap ${selectedGroup === index ? 'selected-group' : 'group'}`}>{group}</td>
-                <td className="py-3 px-6 text-left">
-                  <input
-                    type="color"
-                    value={groupColors[index]}
-                    onChange={(e) => handleColorChange(index, e.target.value)}
-                  />
-                </td>
-                <td className={`py-3 px-6 text-left ${selectedGroup === index ? 'selected-group' : 'group'}`}>{letters}</td>
-              </tr>
-            ))}
-          </tbody>
+        <tbody className="text-gray-600 text-sm font-light" style={{ border: '1px solid black' }}>
+  {groupings && groupings.map(({ group, letters, color }, index) => (
+    <tr
+      key={group}
+      className={selectedGroup === index ? 'selected-group' : 'group'}
+      onClick={() => handleGroupClick(index)}
+    >
+      <td className={`py-3 px-6 text-left whitespace-nowrap ${selectedGroup === index ? 'selected-group' : 'group'}`}>{group}</td>
+      <td className="py-3 px-6 text-left">
+        <input
+          type="color"
+          value={groupColors[index]}
+          onChange={(e) => handleColorChange(index, e.target.value)}
+        />
+      </td>
+      <td className={`py-3 px-6 text-left ${selectedGroup === index ? 'selected-group' : 'group'}`}>{letters}</td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
         <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
           Add Group
