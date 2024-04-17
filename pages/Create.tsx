@@ -6,7 +6,13 @@ import { User } from 'firebase/auth';
 import { collection, addDoc, updateDoc, doc,getDoc } from 'firebase/firestore';
 import Header from '../src/app/Header';
 import WordSearch from './WordSearch';
-
+interface GridContentItem {
+  letter: string;
+  group: number;
+  position: number;
+  index: number;
+  found: boolean;
+}
 const Create = () => {
   // Ref for the grid
   const gridRef = useRef(null);
@@ -92,7 +98,7 @@ const handlePuzzleTypeClick = (type: string | null) => {
 
 export default Create;
 
-export const uploadPuzzle = async (gridContent,username,createState,name) => {
+export const uploadPuzzle = async (gridContent: GridContentItem[], username: string, createState: string | null, name: string) => {
   try {
     // Fetch document from 'count' collection
     const countDocRef = doc(firestore, 'count', 'DocumentCount');
