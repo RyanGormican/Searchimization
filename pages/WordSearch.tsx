@@ -14,6 +14,7 @@ const WordSearch = ({
   gridContent,
   gridRef,
   setGridContent,
+  setName,
   username,
   createState,
 }: {
@@ -21,6 +22,7 @@ const WordSearch = ({
   gridContent: GridContentItem[];
   gridRef: React.RefObject<HTMLDivElement>; 
   setGridContent: React.Dispatch<React.SetStateAction<GridContentItem[]>>;
+  setName: React.Dispatch<React.SetStateAction<string>>;
   username: string;
   createState: string | null;
 }) => {

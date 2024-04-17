@@ -85,7 +85,7 @@ const handlePuzzleTypeClick = (type: string | null) => {
       )}
 
       {createState === 'wordsearch' && (
-        <WordSearch name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} />
+        <WordSearch name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} setName={setName} />
       )}
 
       {createState === 'crossword' && (
