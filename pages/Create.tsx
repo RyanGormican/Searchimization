@@ -25,7 +25,11 @@ const Create = () => {
 
   const router = useRouter();
 
-  const [createState, setCreateState] = useState(null);
+// State for puzzle type
+const [createState, setCreateState] = useState<string | null>(null);
+
+
+
 
   // Effect for checking authentication state
   useEffect(() => {
@@ -42,9 +46,9 @@ const Create = () => {
   }, []);
 
   // Function to set createState based on puzzle type
-  const handlePuzzleTypeClick = (type: string) => {
-    setCreateState(type);
-  };
+const handlePuzzleTypeClick = (type: string | null) => {
+  setCreateState(type);
+};
 
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
