@@ -162,9 +162,9 @@ const calculateGroupings = () => {
       />
     
       <div style={{ minHeight: "50px", maxHeight: "50px" }}>
-        {selectedLetters.length > 0 && (
+        {selectedLetters?.length > 0 && (
           <div>
-            {selectedLetters.map((index) => (
+            {selectedLetters?.map((index) => (
               <span key={index}>
                 {gridContent[index].letter}
               </span>
@@ -183,7 +183,7 @@ const calculateGroupings = () => {
       
       <div className="flex mt-4">
         <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4">
-          {gridContent.map(({ letter, group, position, index }) => (
+          {gridContent && gridContent?.map(({ letter, group, position, index }) => (
             <div
               key={index}
               onClick={() => handleClick(index)}
