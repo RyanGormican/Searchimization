@@ -44,11 +44,14 @@ const WordSearch = ({
 
 
 
-  // Calculate groupings whenever grid content changes
+  // Calculate groupings
   useEffect(() => {
     calculateGroupings();
   }, []);
-
+ // Calculate groupings whenever grid content changes
+  useEffect(() => {
+    calculateGroupings();
+  }, [gridContent]);
   // Submit word handler
   const submitWord = () => {
     if (selectedLetters.length === 0 || selectedGroup === null) {
@@ -80,24 +83,25 @@ const WordSearch = ({
   };
   
     // Calculate groupings based on grid content
-  const calculateGroupings = () => {
-    const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
-    const groups: { [key: number]: string[] } = {};
+const calculateGroupings = () => {
+  const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);
+  const groups: { [key: number]: string[] } = {};
 
-    sortedGridContent.forEach(({ letter, group }) => {
-      if (!groups[group]) {
-        groups[group] = [];
-      }
-      groups[group].push(letter);
-    });
+  sortedGridContent.forEach(({ letter, group }) => {
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(letter);
+  });
 
-    const groupList = Object.entries(groups).map(([group, letters]) => ({
-      group: parseInt(group),
-      letters: letters.join(''),
-    }));
+  const groupList = Object.entries(groups).map(([group, letters]) => ({
+    group: parseInt(group),
+    letters: letters.join(''),
+  }));
 
-    setGroupings(groupList.map(group => ({ ...group, color: '' })));
-  };
+  setGroupings(prevGroupings => groupList.map(group => ({ ...group, color: '' })));
+};
+
 
   // Click handler for grid cells
   const handleClick = (index: number) => {
