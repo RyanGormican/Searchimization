@@ -1,7 +1,29 @@
 import '/src/app/globals.css';
 import React, { useState, useRef, useEffect } from 'react';
 import {uploadPuzzle} from './Create';
-const WordSearch = ({name,gridContent, gridRef,setGridContent,username,createState}) => {
+interface GridContentItem {
+  letter: string;
+  group: number;
+  position: number;
+  index: number;
+  found: boolean;
+}
+
+const WordSearch = ({
+  name,
+  gridContent,
+  gridRef,
+  setGridContent,
+  username,
+  createState,
+}: {
+  name: string;
+  gridContent: GridContentItem[];
+  gridRef: React.RefObject<HTMLDivElement>; 
+  setGridContent: React.Dispatch<React.SetStateAction<GridContentItem[]>>;
+  username: string;
+  createState: string | null;
+}) => {
 
  // State for groupings
   const [groupings, setGroupings] = useState<{ group: number; letters: string; color: string; }[]>([]);
