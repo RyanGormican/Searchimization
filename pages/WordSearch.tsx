@@ -42,15 +42,12 @@ const WordSearch = ({
   // State for selected letters
   const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
 
-    // Initialize grid content
-  useEffect(() => {
-    initializeGridContent();
-  }, []);
+
 
   // Calculate groupings whenever grid content changes
   useEffect(() => {
     calculateGroupings();
-  }, [gridContent]);
+  }, []);
 
   // Submit word handler
   const submitWord = () => {
@@ -82,17 +79,6 @@ const WordSearch = ({
     });
   };
   
-  // Initialize grid content
-  const initializeGridContent = () => {
-    const newGridContent = Array.from({ length: 48 }, (_, index) => ({
-      letter: 'A',
-      group: 1,
-      position: 1,
-      index,
-      found: false
-    }));
-    setGridContent(newGridContent);
-  };
     // Calculate groupings based on grid content
   const calculateGroupings = () => {
     const sortedGridContent = [...gridContent].sort((a, b) => a.position - b.position);

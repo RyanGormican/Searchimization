@@ -53,6 +53,17 @@ const [createState, setCreateState] = useState<string | null>(null);
 
   // Function to set createState based on puzzle type
 const handlePuzzleTypeClick = (type: string | null) => {
+if (type === 'wordsearch'){    
+
+const newGridContent = Array.from({ length: 48 }, (_, index) => ({
+      letter: 'A',
+      group: 1,
+      position: 1,
+      index,
+      found: false
+    }));
+    setGridContent(newGridContent);
+    }
   setCreateState(type);
 };
 
