@@ -231,7 +231,7 @@ const WordSearch = ({name,gridContent, gridRef,setGridContent,username,createSta
         <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
           Add Group
         </button>
-       <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={() => uploadPuzzle(gridContent,username,createState)}>
+       <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={() => uploadPuzzle(gridContent,username,createState,name)}>
   Upload
 </button>
 

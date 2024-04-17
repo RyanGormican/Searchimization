@@ -42,7 +42,7 @@ const Create = () => {
   }, []);
 
   // Function to set createState based on puzzle type
-  const handlePuzzleTypeClick = (type) => {
+  const handlePuzzleTypeClick = (type: string) => {
     setCreateState(type);
   };
 
