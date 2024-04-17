@@ -232,8 +232,8 @@ const WordSearch = ({
               <th className="py-3 px-6 text-left" style={{ border: '1px solid black' }}>Word</th>
             </tr>
           </thead>
-     <tbody className="text-gray-600 text-sm font-light" style={{ border: '1px solid black' }}>
-  {groupings && groupings.length > 0 && groupings.map(({ group, letters, color }, index) => (
+ <tbody className="text-gray-600 text-sm font-light" style={{ border: '1px solid black' }}>
+  {groupings !== undefined && groupings.map(({ group, letters, color }, index) => (
     <tr
       key={group}
       className={selectedGroup === index ? 'selected-group' : 'group'}
@@ -251,6 +251,7 @@ const WordSearch = ({
     </tr>
   ))}
 </tbody>
+
 
 
         </table>
