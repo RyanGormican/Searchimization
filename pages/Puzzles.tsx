@@ -27,7 +27,7 @@ const Puzzles: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sorting order
   const [filteredPuzzleList, setFilteredPuzzleList] = useState<Puzzle[]>([]); // State to store filtered puzzle list
   const [hoveredPuzzleId, setHoveredPuzzleId] = useState<string | null>(null); // State variable to store the ID of the hovered puzzle
-
+  const [numberPuzzles, setNumberPuzzles] = useState('10');
   // Function to fetch puzzles
 const fetchPuzzles = async () => {
   try {
@@ -89,8 +89,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
 
 
   useEffect(() => {
-    fetchPuzzles();
-
+  fetchPuzzles();
   }, []);
 
 // Function to convert time to a human-readable format
@@ -107,10 +106,7 @@ const convertTime = (time: number): string => {
   return (
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={auth.currentUser} />
-      <h1> Community Puzzles </h1>
-      <div className="flex justify-center mt-4">
-        <Icon onClick={playRandom} icon="ion:dice" width="50" />
-      </div>
+      <h1 className="flex justify-center"> Community Puzzles     <Icon onClick={playRandom} icon="ion:dice" width="30" /> </h1>
       <div className="grid grid-cols-3 gap-4">
         {/* Display sorted puzzle list */}
         {puzzleList.map((puzzle) => (
@@ -150,6 +146,7 @@ const convertTime = (time: number): string => {
           </div>
         ))}
       </div>
+
     </main>
   );
 };

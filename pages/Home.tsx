@@ -8,7 +8,7 @@ import '/src/app/globals.css';
 import { playRandom } from '../src/app/Random';
 import PasswordStrengthMeter from '../src/app/PasswordStrengthMeter';
 import { sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth';
-
+import { updateDoc, collection, getDocs } from 'firebase/firestore';
 export default function Home() {
   // State for error message
   const [error, setError] = useState("");
@@ -51,6 +51,21 @@ export default function Home() {
     }
   };
 
+  // Cleanup function to reset when modal is closed
+const cleanupModal = () => {
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
+  setError("");
+};
+
+
+useEffect(() => {
+  if (!showModal) {
+    cleanupModal();
+  }
+  return cleanupModal;
+}, [showModal]);
  // Function to handle user sign up
 const signUpWithEmail = async () => {
   try {
@@ -76,8 +91,6 @@ const signUpWithEmail = async () => {
     setError(error.message);
   }
 };
-
-
   // Effect to listen for changes in user authentication state
   useEffect(() => {
     const fetchData = async (user: User) => {
@@ -107,6 +120,7 @@ const signUpWithEmail = async () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user && user.emailVerified) {
         setUser(user);
+        setShowModal(false);
         await fetchData(user);
       } else {
         setUser(null);
@@ -209,9 +223,11 @@ const forgotPassword = async () => {
                     </div>
                   )}
                   <div>
+                    {!signUpMode && (
                     <button onClick={forgotPassword} className="text-blue-500 hover:text-blue-700 font-medium">
                      Forgot Password?
                     </button>
+                    )}
                    </div>
                   <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
                     <h1>{signUpMode ? "Sign Up" : "Sign In"}</h1>

@@ -114,21 +114,21 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
       <div className="flex">
         <div>
             <Link href="/Puzzles">
-              <button className="py-2 px-4 bg-blue-500 text-white rounded">PUZZLES</button>
+              <button className="py-2 px-2 bg-blue-500 text-white rounded">PUZZLES</button>
             </Link>
       </div>
             <div>
             <Link href="/Leaderboard">
-              <button className="py-2 px-4 bg-blue-500 text-white rounded">LEADERBOARD</button>
+              <button className="py-2 px-2 bg-blue-500 text-white rounded">LEADERBOARD</button>
             </Link>
       </div>
         {currentUser && (
           <div>
             <Link href="/Create">
-              <button className="py-2 px-4 bg-blue-500 text-white rounded">CREATE</button>
+              <button className="py-2 px-2 bg-blue-500 text-white rounded">CREATE</button>
             </Link>
             <Link href="/Profile">
-              <button className="py-2 px-4 bg-blue-500 text-white rounded">PROFILE</button>
+              <button className="py-2 px-2 bg-blue-500 text-white rounded">PROFILE</button>
             </Link>
             <div className="logout">
               <Icon onClick={handleLogout} icon="material-symbols:logout" height="60" />
