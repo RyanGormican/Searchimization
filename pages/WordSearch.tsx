@@ -223,7 +223,7 @@ const calculateGroupings = () => {
             </tr>
           </thead>
  <tbody className="text-gray-600 text-sm font-light" style={{ border: '1px solid black' }}>
-  {groupings !== undefined && groupings.map(({ group, letters, color }, index) => (
+  {groupings && groupings?.map(({ group, letters, color }, index) => (
     <tr
       key={group}
       className={selectedGroup === index ? 'selected-group' : 'group'}
@@ -241,6 +241,7 @@ const calculateGroupings = () => {
     </tr>
   ))}
 </tbody>
+
 
 
 
