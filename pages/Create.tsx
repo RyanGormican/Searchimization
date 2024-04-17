@@ -75,7 +75,7 @@ const Create = () => {
       )}
 
       {createState === 'wordsearch' && (
-        <WordSearch name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState}/>
+        <WordSearch name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} />
       )}
 
       {createState === 'crossword' && (
@@ -88,7 +88,7 @@ const Create = () => {
 
 export default Create;
 
-export const uploadPuzzle = async (gridContent,username,createState) => {
+export const uploadPuzzle = async (gridContent,username,createState,name) => {
   try {
     // Fetch document from 'count' collection
     const countDocRef = doc(firestore, 'count', 'DocumentCount');
