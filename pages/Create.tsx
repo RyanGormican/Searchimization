@@ -120,7 +120,13 @@ const newGridContent = Array.from({ length: 100 }, (_, index) => ({
 
 export default Create;
 
-export const uploadPuzzle = async (gridContent: GridContentItem[], username: string, createState: string | null, name: string) => {
+export const uploadPuzzle = async (
+  gridContent: GridContentItem[],
+  username: string,
+  createState: string | null,
+  name: string,
+  groupings: { group: string | null; letters: string; description: string; startIndex: number; endIndex: number }[]
+) => {
   try {
     // Fetch document from 'count' collection
     const countDocRef = doc(firestore, 'count', 'DocumentCount');
@@ -147,12 +153,13 @@ export const uploadPuzzle = async (gridContent: GridContentItem[], username: str
       likes: 0,
       plays: 0,
       finishes: 0,
-      height:8,
-      width:6,
+      height: createState === 'wordsearch' ? 8 : 10,
+      width: createState === 'wordsearch' ? 6 : 10,
       timecreated: new Date().toISOString(),
       lastupdated: new Date().toISOString(),
       type: createState,
-      id: updatedPuzzleCount 
+      id: updatedPuzzleCount,
+      ...(createState === 'crossword' && { groupings: groupings }),
     };
 
     // Add puzzle data to 'puzzles' collection
@@ -161,7 +168,7 @@ export const uploadPuzzle = async (gridContent: GridContentItem[], username: str
     // Update count document with incremented values
     await updateDoc(countDocRef, {
       puzzleCount: updatedPuzzleCount,
-      documentCount: updatedDocumentCount
+      documentCount: updatedDocumentCount,
     });
 
     window.location.href = `/Puzzles`;
