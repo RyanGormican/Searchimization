@@ -64,7 +64,8 @@ const newGridContent = Array.from({ length: 48 }, (_, index) => ({
       index,
       found: false
     }));
-    setGridContent(newGridContent);
+setGridContent(newGridContent as GridContentItem[]);
+
     }
     if (type === 'crossword'){    
 
@@ -75,7 +76,8 @@ const newGridContent = Array.from({ length: 100 }, (_, index) => ({
       index,
       found: false
     }));
-    setGridContent(newGridContent);
+setGridContent(newGridContent as GridContentItem[]);
+
     }
   setCreateState(type);
 };
