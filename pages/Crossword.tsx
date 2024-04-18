@@ -3,7 +3,8 @@ import { uploadPuzzle } from './Create';
 
 interface GridContentItem {
   letter: string;
-  group: number | null;
+  group: number;
+  position: number;
   index: number;
   found: boolean;
 }
