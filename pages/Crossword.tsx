@@ -38,95 +38,104 @@ const Crossword: React.FC<Props> = ({
     calculateGroupings();
   }, [gridContent]);
 
-  const calculateGroupings = () => {
-    const rowGroupings = [];
-    const colGroupings = [];
+const calculateGroupings = () => {
+  const rowGroupings = [];
+  const colGroupings = [];
 
-    // Initialize counters for across and down groupings
-    let acrossIndex = 1;
-    let downIndex = 1;
+  // Initialize counters for across and down groupings
+  let acrossIndex = 1;
+  let downIndex = 1;
 
-    // Iterate over each row and column
-    for (let i = 0; i < 10; i++) {
-      let rowLetters = '';
-      let colLetters = '';
-      let rowStartIndex = -1;
-      let colStartIndex = -1;
+  // Iterate over each row and column
+  for (let i = 0; i < 10; i++) {
+    let rowLetters = '';
+    let colLetters = '';
+    let rowStartIndex = -1;
+    let colStartIndex = -1;
 
-      // Find letters in current row and column
-      gridContent.forEach(({ letter, index }) => {
-        if (Math.floor(index / 10) === i) {
-          if (letter.trim() !== '') {
-            rowLetters += letter;
-            if (rowStartIndex === -1) {
-              rowStartIndex = index;
-            }
-          } else {
-            // Check if current grouping is eligible
-            if (rowLetters.length >= 1) {
-              rowGroupings.push({
-                group: `Across ${acrossIndex}`,
-                description: '',
-                letters: rowLetters,
-                startIndex: rowStartIndex,
-                endIndex: index - 1,
-              });
-              acrossIndex++;
-            }
-            rowLetters = ''; // Start a new grouping
-            rowStartIndex = -1;
-          }
+    // Find letters in current row and column
+    for (let j = 0; j < 10; j++) {
+      const rowIndex = i * 10 + j;
+      const colIndex = j * 10 + i;
+      const rowLetter = gridContent[rowIndex].letter;
+      const colLetter = gridContent[colIndex].letter;
+
+      // Process row letters
+      if (rowLetter.trim() !== '') {
+        rowLetters += rowLetter;
+        if (rowStartIndex === -1) {
+          rowStartIndex = rowIndex;
         }
-        if (index % 10 === i) {
-          if (letter.trim() !== '') {
-            colLetters += letter;
-            if (colStartIndex === -1) {
-              colStartIndex = index;
-            }
-          } else {
-            // Check if current grouping is eligible
-            if (colLetters.length >= 1) {
-              colGroupings.push({
-                group: `Down ${downIndex}`,
-                description: '',
-                letters: colLetters,
-                startIndex: colStartIndex,
-                endIndex: index - 1,
-              });
-              downIndex++;
-            }
-            colLetters = ''; // Start a new grouping
-            colStartIndex = -1;
-          }
+      } else {
+        // Check if current grouping is eligible
+        if (rowLetters.length >= 1) {
+          rowGroupings.push({
+            group: `Across ${acrossIndex}`,
+            description: '',
+            letters: rowLetters,
+            startIndex: rowStartIndex,
+            endIndex: rowIndex - 1,
+          });
+          acrossIndex++;
         }
-      });
-
-      // Check if last grouping is eligible
-      if (rowLetters.length >= 1) {
-        rowGroupings.push({
-          group: `Across ${acrossIndex}`,
-          description: '',
-          letters: rowLetters,
-          startIndex: rowStartIndex,
-          endIndex: 9 + i * 10,
-        });
-        acrossIndex++;
+        rowLetters = ''; // Start a new grouping
+        rowStartIndex = -1;
       }
-      if (colLetters.length >= 1) {
-        colGroupings.push({
-          group: `Down ${downIndex}`,
-          description: '',
-          letters: colLetters,
-          startIndex: colStartIndex,
-          endIndex: 9 + i,
-        });
-        downIndex++;
+
+      // Process column letters
+      if (colLetter.trim() !== '') {
+        colLetters += colLetter;
+        if (colStartIndex === -1) {
+          colStartIndex = colIndex;
+        }
+      } else {
+        // Check if current grouping is eligible
+        if (colLetters.length >= 1) {
+          colGroupings.push({
+            group: `Down ${downIndex}`,
+            description: '',
+            letters: colLetters,
+            startIndex: colStartIndex,
+            endIndex: colIndex - 10,
+          });
+          downIndex++;
+        }
+        colLetters = ''; // Start a new grouping
+        colStartIndex = -1;
       }
     }
 
-    // Update groupings state
-    setGroupings([...rowGroupings, ...colGroupings]);
-  };
+    // Check if last grouping is eligible
+    if (rowLetters.length >= 1) {
+      const lastRowIndex = (i + 1) * 10 - 1;
+      rowGroupings.push({
+        group: `Across ${acrossIndex}`,
+        description: '',
+        letters: rowLetters,
+        startIndex: rowStartIndex,
+        endIndex: lastRowIndex,
+      });
+      acrossIndex++;
+    }
+    if (colLetters.length >= 1) {
+      const lastColIndex = 90 + i;
+      colGroupings.push({
+        group: `Down ${downIndex}`,
+        description: '',
+        letters: colLetters,
+        startIndex: colStartIndex,
+        endIndex: lastColIndex,
+      });
+      downIndex++;
+    }
+  }
+
+  // Update groupings state
+  setGroupings([...rowGroupings, ...colGroupings]);
+};
+
+
+
 
   const handleDescriptionChange = (index: number, newDescription: string) => {
     // Assuming groupings is stored in state and setGroupings is the setter function for updating it
