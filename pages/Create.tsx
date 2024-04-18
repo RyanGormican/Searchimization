@@ -10,7 +10,7 @@ import Crossword from './Crossword';
 interface GridContentItem {
   letter: string;
   group: number;
-  position?: number; 
+  position: number; 
   index: number;
   found: boolean;
 }
