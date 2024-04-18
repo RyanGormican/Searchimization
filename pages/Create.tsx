@@ -6,6 +6,7 @@ import { User } from 'firebase/auth';
 import { collection, addDoc, updateDoc, doc,getDoc } from 'firebase/firestore';
 import Header from '../src/app/Header';
 import WordSearch from './WordSearch';
+import Crossword from './Crossword';
 interface GridContentItem {
   letter: string;
   group: number;
@@ -64,6 +65,16 @@ const newGridContent = Array.from({ length: 48 }, (_, index) => ({
     }));
     setGridContent(newGridContent);
     }
+    if (type === 'crossword'){    
+
+const newGridContent = Array.from({ length: 100 }, (_, index) => ({
+      letter: 'A',
+      group: 1,
+      index,
+      found: false
+    }));
+    setGridContent(newGridContent);
+    }
   setCreateState(type);
 };
 
@@ -100,7 +111,7 @@ const newGridContent = Array.from({ length: 48 }, (_, index) => ({
       )}
 
       {createState === 'crossword' && (
-      <div> </div>
+    <Crossword name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} setName={setName} />
       )}
     </main>
   );
