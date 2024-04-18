@@ -71,7 +71,6 @@ const newGridContent = Array.from({ length: 48 }, (_, index) => ({
 const newGridContent = Array.from({ length: 100 }, (_, index) => ({
       letter: 'A',
       group: 1,
-      position:1
       index,
       found: false
     }));
