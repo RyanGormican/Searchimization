@@ -249,9 +249,20 @@ const calculateGroupings = () => {
         <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
           Add Group
         </button>
-       <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={() => uploadPuzzle(gridContent,username,createState,name,groupings)}>
+     <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={() => {
+
+  const dummyGroupings = groupings.map(({ group }) => ({
+    group: group.toString(),
+    letters: '',
+    description: '',
+    startIndex: 0,
+    endIndex: 0,
+  }));
+  uploadPuzzle(gridContent, username, createState, name, dummyGroupings);
+}}>
   Upload
 </button>
+
 
       </div>
     </div>
