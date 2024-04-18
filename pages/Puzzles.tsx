@@ -12,6 +12,7 @@ interface Puzzle {
   id: string;
   puzzleId: string;
   theme: string;
+  type:string;
   plays: number;
   likes: number;
   finishes: number;
@@ -118,13 +119,16 @@ const convertTime = (time: number): string => {
           >
             <Link href={`/Play/${puzzle.puzzleId}`}>
               <div className="block bg-gray-200 p-4 rounded hover:bg-gray-300">
-                <p>{puzzle.theme}</p>
+                <p>{puzzle.theme} </p>
+
                 <div className="flex">
                   <Icon icon="mdi:play" width="20" /> {puzzle.plays}
                   <div style={{ display: 'none' }}>
                     <Icon icon="mdi:heart" width="20" /> {puzzle.likes}{' '}
                   </div>
                   <Icon icon="material-symbols:flag" width="20" /> {puzzle.finishes}
+                  {puzzle.type === 'crossword' && <Icon icon="material-symbols:crossword" width="20" />}
+                {puzzle.type === 'wordsearch' && <Icon icon="lucide:text-search" width="20" />}
                 </div>
                 <div className="flex">
                   <Icon icon="mdi:user" width="20" /> <p> {puzzle.userName} </p>

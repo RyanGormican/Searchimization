@@ -17,6 +17,7 @@ interface GridItem {
 interface PuzzleData {
   theme: string;
   gridContent: GridItem[];
+  type: string;
 }
 // Interface for local storage
 interface SearchimizationEntry {
@@ -31,6 +32,7 @@ const Play = () => {
   // State variables for puzzle theme, grid content, found words, selected letters, mouse down state,
   // found indexes, start time, end time, and fast times
   const [theme, setTheme] = useState<PuzzleData | null>(null);
+  const [type, setType] = useState<PuzzleData | null>(null);
   const [gridContent, setGridContent] = useState<GridItem[]>([]);
   const [foundWords, setFoundWords] = useState<number>(0);
   const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
@@ -104,6 +106,7 @@ const searchimizationData = JSON.parse(localStorage.getItem('searchimization') |
 const puzzleFromStorage = searchimizationData.entries.find((entry: SearchimizationEntry) => entry.id === id);
       if (puzzleFromStorage) {
         setTheme(puzzleFromStorage);
+        setType(puzzleFromStorage);
         setGridContent(puzzleFromStorage.gridContent); 
             const updatedProfile = {
               ...searchimizationData.profile,
@@ -126,6 +129,7 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
     const puzzleDoc = await getDoc(puzzleDocRef);
     const puzzleData = puzzleDoc.data() as PuzzleData;
     setTheme(puzzleData);
+    setType(puzzleData);
     setGridContent(puzzleData.gridContent); // Set grid content state
 
     // Save puzzle data to local storage
@@ -235,35 +239,38 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
 
 
   return (
-    <main className="flex min-h-screen items-center p-12 flex-col">
-      <Header currentUser={auth.currentUser} />
-      <div className="flex flex-col mb-4">
-        <h1 className="font-bold">Your Theme</h1>
-        <p className="mb-4">{theme && theme.theme}</p>
-        <h2>
-          <p>{foundWords} of {maxGroup} theme words found</p>
-        </h2>
-        <div style={{ minHeight: "50px", maxHeight: "50px" }}>
-          {selectedLetters.length > 0 && (
-            <div>
-              {selectedLetters.map((index) => (
-                <span key={index} className={foundIndexes.includes(index) ? "bg-blue-200" : ""}>
-                  {gridContent[index].letter}
-                </span>
-              ))}
+  <main className="flex min-h-screen items-center p-12 flex-col">
+    <Header currentUser={auth.currentUser} />
+    <div className="flex flex-col mb-4">
+      <h1 className="font-bold">Your Theme</h1>
+      <p className="mb-4">{theme && theme.theme}</p>
+      {type && type.type === 'wordsearch' && (
+      <div>
+        <div>
+          <h2>
+            <p>{foundWords} of {maxGroup} theme words found</p>
+          </h2>
+          <div style={{ minHeight: "50px", maxHeight: "50px" }}>
+            {selectedLetters.length > 0 && (
               <div>
-                <button className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out" onClick={submitWord}>
-                  Submit
-                </button>
-                <button className="text-l font-bold mb-8 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out" onClick={resetSelect}>
-                  Reset
-                </button>
+                {selectedLetters.map((index) => (
+                  <span key={index} className={foundIndexes.includes(index) ? "bg-blue-200" : ""}>
+                    {gridContent[index].letter}
+                  </span>
+                ))}
+                <div>
+                  <button className="text-l font-bold mb-8 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out" onClick={submitWord}>
+                    Submit
+                  </button>
+                  <button className="text-l font-bold mb-8 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out" onClick={resetSelect}>
+                    Reset
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-      <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4" onMouseUp={handleMouseUp}>
+         <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4" onMouseUp={handleMouseUp}>
         {gridContent.map(({ letter, group, position, index }) => (
           <div
             key={index}
@@ -276,8 +283,13 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
           </div>
         ))}
       </div>
-    </main>
-  );
+      </div>
+      )}
+     
+    </div>
+  </main>
+);
+
 }
 
 export default Play;
