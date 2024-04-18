@@ -138,7 +138,6 @@ const calculateGroupings = () => {
 
 
   const handleDescriptionChange = (index: number, newDescription: string) => {
-    // Assuming groupings is stored in state and setGroupings is the setter function for updating it
     const updatedGroupings = [...groupings];
     updatedGroupings[index].description = newDescription;
     setGroupings(updatedGroupings);
