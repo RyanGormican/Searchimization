@@ -35,32 +35,71 @@ const Crossword = ({
   const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
 
   // State for groupings
-  const [groupings, setGroupings] = useState<{ group: number | null; letters: string }[]>([]);
+  const [groupings, setGroupings] = useState<{ group: string | null; letters: string }[]>([]);
 
   // Calculate groupings based on grid content
   useEffect(() => {
     calculateGroupings();
   }, [gridContent]);
 
-  const calculateGroupings = () => {
-    const groups: { [key: number | null]: string[] } = {};
+const calculateGroupings = () => {
+  const rowGroupings = [];
+  const colGroupings = [];
 
-    gridContent.forEach(({ letter, group }) => {
-      if (!groups[group]) {
-        groups[group] = [];
+  // Initialize counters for across and down groupings
+  let acrossIndex = 1;
+  let downIndex = 1;
+
+  // Iterate over each row and column
+  for (let i = 0; i < 10; i++) {
+    let rowLetters = '';
+    let colLetters = '';
+
+    // Find letters in current row and column
+    gridContent.forEach(({ letter, index }) => {
+      if (Math.floor(index / 10) === i) {
+        if (letter.trim() !== '') {
+          rowLetters += letter;
+        } else {
+          // Check if current grouping is eligible
+          if (rowLetters.length >= 1) {
+            rowGroupings.push({ group: `Across ${acrossIndex}`, description: '', letters: rowLetters });
+            acrossIndex++;
+          }
+          rowLetters = ''; // Start a new grouping
+        }
       }
-      if (letter.trim() !== '') {
-        groups[group].push(letter);
+      if (index % 10 === i) {
+        if (letter.trim() !== '') {
+          colLetters += letter;
+        } else {
+          // Check if current grouping is eligible
+          if (colLetters.length >= 1) {
+            colGroupings.push({ group: `Down ${downIndex}`, description: '', letters: colLetters });
+            downIndex++;
+          }
+          colLetters = ''; // Start a new grouping
+        }
       }
     });
 
-    const groupList = Object.entries(groups).map(([group, letters]) => ({
-      group: group === 'null' ? null : parseInt(group),
-      letters: letters.join(''),
-    }));
+    // Check if last grouping is eligible
+    if (rowLetters.length >= 1) {
+      rowGroupings.push({ group: `Across ${acrossIndex}`, description: '', letters: rowLetters });
+      acrossIndex++;
+    }
+    if (colLetters.length >= 1) {
+      colGroupings.push({ group: `Down ${downIndex}`, description: '', letters: colLetters });
+      downIndex++;
+    }
+  }
 
-    setGroupings(groupList);
-  };
+  // Update groupings state
+  setGroupings([...rowGroupings, ...colGroupings]);
+};
+
+
+
 
   // Click handler for grid cells
   const handleClick = (index: number) => {
@@ -167,9 +206,6 @@ const handleAddGroup = () => {
         </table>
       </div>
       <div className="flex">
-          <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={handleAddGroup}>
-          Add Group
-        </button>
        <button className="py-2 px-4 bg-blue-500 text-white rounded" onClick={() => uploadPuzzle(gridContent,username,createState,name)}>
   Upload
 </button>
