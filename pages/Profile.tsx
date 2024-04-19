@@ -8,6 +8,7 @@ import { Icon } from '@iconify/react';
 // Define SearchimizationData type
 interface SearchimizationData {
   profile: {
+   [key: string]: string | number; 
     username: string;
     totalplays: number; 
     totalfinishes: number;

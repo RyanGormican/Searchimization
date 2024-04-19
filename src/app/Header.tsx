@@ -45,7 +45,7 @@ const handleLogout = async () => {
         const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
 
         // Prepare update data
-        const updateData = {
+         const updateData: { [key: string]: any } = {
           totalplays: newTotalplays,
           totalfinishes: newTotalfinishes
         };

@@ -14,6 +14,7 @@ interface LeaderboardUser {
 // Define SearchimizationData type
 interface SearchimizationData {
   profile: {
+    [key: string]: string | number; 
     username: string;
     totalplays: number; 
     totalfinishes: number;
