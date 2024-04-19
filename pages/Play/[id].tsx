@@ -155,7 +155,8 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
 
  
   // Calculate maximum group number
-const maxGroup = type && type.type === 'crossword' ? theme.groupings.length : Math.max(...gridContent.map(item => item.group));
+const maxGroup = type && type.type === 'crossword' && theme ? theme.groupings.length : Math.max(...gridContent.map(item => item.group));
+
 
 
   // Effect to fetch puzzle data and start the timer on component mount
