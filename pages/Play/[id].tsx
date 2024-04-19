@@ -190,7 +190,7 @@ const maxGroup = type && type.type === 'crossword' && theme ? theme.groupings.le
        <WordSearchPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}/>
       )}
       {type && type.type === 'crossword' && theme && (
-       <CrosswordPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}   groupings={theme && theme.groupings}/>
+       <CrosswordPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef}  groupings={theme && theme.groupings}/>
       )}
     </div>
   </main>

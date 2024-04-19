@@ -12,15 +12,13 @@ interface GridItem {
 interface Props {
   gridContent: GridItem[];
   foundWords: number;
-  foundIndexes: number[];
   setFoundWords: React.Dispatch<React.SetStateAction<number>>;
-  setFoundIndexes: React.Dispatch<React.SetStateAction<number>>;
   maxGroup: number;
   gridRef: React.RefObject<HTMLDivElement>;
   groupings: { group: string | null; letters: string; description: string; startIndex: number; endIndex: number }[];
 }
 
-const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords, maxGroup, gridRef, foundIndexes, setFoundIndexes, groupings }) => {
+const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords, maxGroup, gridRef,  groupings }) => {
   // Define state for editing index and guessGrid
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [guessGrid, setGuessGrid] = useState<GridItem[]>(() =>
