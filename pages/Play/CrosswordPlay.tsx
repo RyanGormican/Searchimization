@@ -171,6 +171,8 @@ const calculateGroupings = () => {
           </table>
         </div>
         <div className="grid grid-cols-10 grid-rows-10 gap-4">
+            {guessGrid && guessGrid.length > 0 && (
+            <div>
           {guessGrid.map((gridItem, index) => (
             <div
       key={index}
@@ -205,6 +207,8 @@ const calculateGroupings = () => {
               )}
             </div>
           ))}
+          </div>
+          )}
         </div>
         <div className="ml-4 flex-grow">
           {/* Table for Down groupings */}
