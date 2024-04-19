@@ -150,7 +150,7 @@ const calculateGroupings = () => {
             <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
             {groupings && groupings?.length > 0 && (
               <div>
-              {groupings.map(({ group, description }, index) => {
+              {groupings?.map(({ group, description }, index) => {
                 if (group && group.startsWith("Across")) {
                   return (
                     <tr key={index}>
@@ -173,7 +173,7 @@ const calculateGroupings = () => {
         <div className="grid grid-cols-10 grid-rows-10 gap-4">
             {guessGrid && guessGrid?.length > 0 && (
             <div>
-          {guessGrid.map((gridItem, index) => (
+          {guessGrid?.map((gridItem, index) => (
             <div
       key={index}
       onClick={() => handleClick(index)}
@@ -227,7 +227,7 @@ const calculateGroupings = () => {
             <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
                 {groupings && groupings?.length > 0 && (
                 <div>
-              {groupings.map(({ group, description }, index) => {
+              {groupings?.map(({ group, description }, index) => {
                 if (group && group.startsWith("Down")) {
                   return (
                     <tr key={index}>
