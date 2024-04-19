@@ -19,6 +19,13 @@ interface PuzzleData {
   theme: string;
   gridContent: GridItem[];
   type: string;
+  groupings: {
+    group: string | null;
+    letters: string;
+    description: string;
+    startIndex: number;
+    endIndex: number;
+  }[];
 }
 // Interface for local storage
 interface SearchimizationEntry {
