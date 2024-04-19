@@ -60,7 +60,7 @@ const handleLogout = async () => {
         });
 
         // Update the document with incremented values
-        if (searchmizationData.sessionplays > 0)
+        if (searchimizationData.sessionplays > 0)
         {
         await updateDoc(userDocRef, updateData);
         }
