@@ -136,17 +136,20 @@ const convertTime = (time: number): string => {
               </div>
             </Link>
             {/* Display top 10 times when hovering over the puzzle */}
-            {hoveredPuzzleId === puzzle.puzzleId && puzzle.fastTimes && (
-              <div className="absolute top-0 left-0 bg-white p-4 rounded shadow-md">
-                <h3 className="font-semibold mb-2">{puzzle.theme}</h3>
-                {puzzle.fastTimes.map((time, index) => (
-                  <div key={index} className="mb-1">
-                    <span>{index + 1}. </span>
-                    <span>{time.username}: {convertTime(time.time)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+      {hoveredPuzzleId === puzzle.puzzleId && puzzle.fastTimes && (
+  <div className="absolute top-0 left-0 bg-white p-4 rounded shadow-md" style={{ zIndex: '9000' }}>
+    <Link href={`/Play/${hoveredPuzzleId}`}>
+      <h3 className="font-semibold mb-2">{puzzle.theme}</h3>
+      {puzzle.fastTimes.map((time, index) => (
+        <div key={index} className="mb-1">
+          <span>{index + 1}. </span>
+          <span>{time.username}: {convertTime(time.time)}</span>
+        </div>
+      ))}
+    </Link>
+  </div>
+)}
+
           </div>
         ))}
       </div>
