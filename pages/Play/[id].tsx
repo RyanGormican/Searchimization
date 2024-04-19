@@ -186,10 +186,10 @@ const maxGroup = type && type.type === 'crossword' && theme ? theme.groupings.le
     <div className="flex flex-col mb-4 items-center">
       <h1 className="font-bold">Your Theme</h1>
       <p className="mb-4">{theme && theme.theme}</p>
-      {type && type.type === 'wordsearch' && (
+      {type && type.type === 'wordsearch' && theme && (
        <WordSearchPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}/>
       )}
-      {type && type.type === 'crossword' && (
+      {type && type.type === 'crossword' && theme && (
        <CrosswordPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}   groupings={theme && theme.groupings}/>
       )}
     </div>
