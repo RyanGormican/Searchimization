@@ -21,15 +21,16 @@ interface Props {
 const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords, maxGroup, gridRef,  groupings }) => {
   // Define state for editing index and guessGrid
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [guessGrid, setGuessGrid] = useState<GridItem[]>(() =>
-    Array.from({ length: 100 }, (_, index) => ({
-      letter: "", // Initialize letter as empty
-      group: -1,
-      position: -1,
-      index,
-      found: false
-    }))
-  );
+const [guessGrid, setGuessGrid] = useState<GridItem[]>(() =>
+  gridContent.map((_, index) => ({
+    letter: "", // Initialize letter as empty
+    group: -1,
+    position: -1,
+    index,
+    found: false
+  }))
+);
+
 const calculateGroupings = () => {
   // Initialize counters for across and down groupings
   let acrossIndex = 1;
