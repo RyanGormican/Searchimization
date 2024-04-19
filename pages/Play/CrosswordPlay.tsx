@@ -12,7 +12,7 @@ interface GridItem {
 interface Props {
   gridContent: GridItem[];
   foundWords: number;
-  foundIndexes: number;
+  foundIndexes: number[];
   setFoundWords: React.Dispatch<React.SetStateAction<number>>;
   setFoundIndexes: React.Dispatch<React.SetStateAction<number>>;
   maxGroup: number;
