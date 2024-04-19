@@ -84,7 +84,7 @@ const searchimizationData = JSON.parse(localStorage.getItem('searchimization') |
          const updatedProfile = {
               ...searchimizationData.profile,
               sessionfinishes: (searchimizationData.profile.sessionfinishes || 0) + 1,
-              [`${puzzleData.type}F`]: (searchimizationData.profile[`${puzzleData.type}F`] || 0) + 1,
+              [`${puzzleData?.type}F`]: (searchimizationData.profile[`${puzzleData?.type}F`] || 0) + 1,
             };
             localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
       } else
@@ -146,7 +146,7 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
         const updatedProfile = {
               ...searchimizationData.profile,
               sessionplays: (searchimizationData.profile.sessionplays || 0) + 1,
-              [`${puzzleData.type}P`]: (searchimizationData.profile[`${puzzleData.type}P`] || 0) + 1
+              [`${puzzleData?.type}P`]: (searchimizationData.profile[`${puzzleData?.type}P`] || 0) + 1
             };
             localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
