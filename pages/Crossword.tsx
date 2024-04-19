@@ -69,7 +69,7 @@ const calculateGroupings = () => {
         }
       } else {
         // Check if current grouping is eligible
-        if (rowLetters.length >= 1) {
+        if (rowLetters.length >= 3) {
           rowGroupings.push({
             group: `Across ${acrossIndex}`,
             description: '',
@@ -91,7 +91,7 @@ const calculateGroupings = () => {
         }
       } else {
         // Check if current grouping is eligible
-        if (colLetters.length >= 1) {
+        if (colLetters.length >= 3) {
           colGroupings.push({
             group: `Down ${downIndex}`,
             description: '',
@@ -107,7 +107,7 @@ const calculateGroupings = () => {
     }
 
     // Check if last grouping is eligible
-    if (rowLetters.length >= 1) {
+    if (rowLetters.length >= 3) {
       const lastRowIndex = (i + 1) * 10 - 1;
       rowGroupings.push({
         group: `Across ${acrossIndex}`,
@@ -118,7 +118,7 @@ const calculateGroupings = () => {
       });
       acrossIndex++;
     }
-    if (colLetters.length >= 1) {
+    if (colLetters.length >= 3) {
       const lastColIndex = 90 + i;
       colGroupings.push({
         group: `Down ${downIndex}`,

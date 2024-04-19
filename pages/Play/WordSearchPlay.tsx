@@ -10,9 +10,9 @@ interface GridItem {
 interface Props {
   gridContent: GridItem[];
   foundWords: number;
-    foundIndexes: number;
+  foundIndexes: { index: number }[];
   setFoundWords: React.Dispatch<React.SetStateAction<number>>;
-    setFoundIndexes: React.Dispatch<React.SetStateAction<number>>;
+ setFoundIndexes: React.Dispatch<React.SetStateAction<{ index: number }[]>>;
   maxGroup: number;
   gridRef: React.RefObject<HTMLDivElement>;
 }
