@@ -63,7 +63,7 @@ const calculateGroupings = () => {
         }
       } else {
         // Check if current grouping is eligible
-        if (rowLetters.length >= 1 && rowLetters === guessRowLetter) {
+        if (rowLetters.length >= 3 && rowLetters === guessRowLetters) {
         found++;
         }
         rowLetters = ''; // Start a new grouping
@@ -80,7 +80,7 @@ const calculateGroupings = () => {
         }
       } else {
         // Check if current grouping is eligible
-        if (colLetters.length >= 1 && colLetters === guessColLetter) {
+        if (colLetters.length >= 3 && colLetters === guessColLetters) {
          found++;
         }
         colLetters = ''; // Start a new grouping
@@ -90,10 +90,10 @@ const calculateGroupings = () => {
     }
 
     // Check if last grouping is eligible
-    if (rowLetters.length >= 1 && rowLetters === guessRowLetters) {
+    if (rowLetters.length >= 3 && rowLetters === guessRowLetters) {
           found++;
     }
-    if (colLetters.length >= 1 && colLetters === guessColLetters) {
+    if (colLetters.length >= 3 && colLetters === guessColLetters) {
        found++;
     }
   }
