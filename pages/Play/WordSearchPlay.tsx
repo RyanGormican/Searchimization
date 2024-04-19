@@ -114,6 +114,8 @@ return (
           </div>
         </div>
          <div ref={gridRef} className="grid grid-cols-6 grid-rows-8 gap-4" onMouseUp={handleMouseUp}>
+             {gridContent && gridContent.length > 0 && (
+             <div>
         {gridContent.map(({ letter, group, position, index }) => (
           <div
             key={index}
@@ -125,6 +127,8 @@ return (
             </div>
           </div>
         ))}
+        </div>
+        )}
       </div>
       </div>
       );

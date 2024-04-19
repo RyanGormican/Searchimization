@@ -148,6 +148,8 @@ const calculateGroupings = () => {
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
+            {groupings && groupings.length > 0 && (
+              <div>
               {groupings.map(({ group, description }, index) => {
                 if (group && group.startsWith("Across")) {
                   return (
@@ -163,6 +165,8 @@ const calculateGroupings = () => {
                 }
                 return null;
               })}
+              </div>
+              )}
             </tbody>
           </table>
         </div>
@@ -217,6 +221,8 @@ const calculateGroupings = () => {
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
+                {groupings && groupings.length > 0 && (
+                <div>
               {groupings.map(({ group, description }, index) => {
                 if (group && group.startsWith("Down")) {
                   return (
@@ -232,6 +238,8 @@ const calculateGroupings = () => {
                 }
                 return null;
               })}
+              </div>
+              )}
             </tbody>
           </table>
         </div>
