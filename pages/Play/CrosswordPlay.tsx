@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface GridItem {
   letter: string;
@@ -32,6 +32,76 @@ const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords
       found: false
     }))
   );
+const calculateGroupings = () => {
+  // Initialize counters for across and down groupings
+  let acrossIndex = 1;
+  let downIndex = 1;
+  let found = 0;
+  // Iterate over each row and column
+  for (let i = 0; i < 10; i++) {
+    let rowLetters = '';
+    let colLetters = '';
+    let rowStartIndex = -1;
+    let colStartIndex = -1;
+    let guessRowLetters = ''; 
+    let guessColLetters = '';
+
+    // Find letters in current row and column
+    for (let j = 0; j < 10; j++) {
+      const rowIndex = i * 10 + j;
+      const colIndex = j * 10 + i;
+      const rowLetter = gridContent[rowIndex].letter;
+      const colLetter = gridContent[colIndex].letter;
+      const guessRowLetter = guessGrid[rowIndex].letter;
+      const guessColLetter = guessGrid[colIndex].letter;
+
+      // Process row letters
+      if (rowLetter.trim() !== '') {
+        rowLetters += rowLetter;
+        guessRowLetters+= guessRowLetter;
+        if (rowStartIndex === -1) {
+          rowStartIndex = rowIndex;
+        }
+      } else {
+        // Check if current grouping is eligible
+        if (rowLetters.length >= 1 && rowLetters === guessRowLetter) {
+        found++;
+        }
+        rowLetters = ''; // Start a new grouping
+        guessRowLetters='';
+        rowStartIndex = -1;
+      }
+
+      // Process column letters
+      if (colLetter.trim() !== '') {
+        colLetters += colLetter;
+        guessColLetters+= guessColLetter;
+        if (colStartIndex === -1) {
+          colStartIndex = colIndex;
+        }
+      } else {
+        // Check if current grouping is eligible
+        if (colLetters.length >= 1 && colLetters === guessColLetter) {
+         found++;
+        }
+        colLetters = ''; // Start a new grouping
+        guessColLetters='';
+        colStartIndex = -1;
+      }
+    }
+
+    // Check if last grouping is eligible
+    if (rowLetters.length >= 1 && rowLetters === guessRowLetters) {
+          found++;
+    }
+    if (colLetters.length >= 1 && colLetters === guessColLetters) {
+       found++;
+    }
+  }
+
+  setFoundWords(found);
+};
+
 
   // Input change handler for grid cells
   const handleInputChange = (index: number, newLetter: string) => {
@@ -52,11 +122,14 @@ const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords
     setEditingIndex(index);
   };
 
+   useEffect(() => {
+   calculateGroupings();
+  }, [guessGrid]);
   return (
     <div>
       <div>
         <h2>
-          <p>
+          <p className="items-center" style={{textAlign:'center'}}>
             {foundWords} of {maxGroup} theme words found
           </p>
         </h2>
@@ -98,10 +171,17 @@ const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords
         <div className="grid grid-cols-10 grid-rows-10 gap-4">
           {guessGrid.map((gridItem, index) => (
             <div
-              key={index}
-              onClick={() => handleClick(index)}
-              style={{ border: "1px solid black", textAlign: "center", minWidth: "20px" }} 
-            >
+      key={index}
+      onClick={() => handleClick(index)}
+      className={`${
+        gridContent[index]?.letter === gridItem.letter ? "bg-blue-200" : ""
+      }`}
+      style={{
+        border: "1px solid black",
+        textAlign: "center",
+        minWidth: "20px"
+      }}
+    >
               {editingIndex === index ? (
                 <input
                   type="text"

@@ -175,7 +175,7 @@ const maxGroup = type && type.type === 'crossword' ? theme.groupings.length : Ma
   return (
   <main className="flex min-h-screen items-center p-12 flex-col">
     <Header currentUser={auth.currentUser} />
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col mb-4 items-center">
       <h1 className="font-bold">Your Theme</h1>
       <p className="mb-4">{theme && theme.theme}</p>
       {type && type.type === 'wordsearch' && (
