@@ -22,9 +22,9 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [name, setName] = useState<string>('');
   const [suggestion, setSuggestion] = useState<string>('');
-
- const handleLogout = async () => {
+const handleLogout = async () => {
   try {
+    const currentUser = auth.currentUser;
     if (currentUser) {
       const userId = currentUser.uid;
       const userDocRef = doc(firestore, 'users', userId);
@@ -44,12 +44,26 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
         const newTotalplays = (userData.totalplays || 0) + sessionplays;
         const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
 
-        // Update the document with incremented values
-        await updateDoc(userDocRef, {
+        // Prepare update data
+        const updateData = {
           totalplays: newTotalplays,
           totalfinishes: newTotalfinishes
+        };
+
+        // Add values ending with 'P' or 'F' to update data 
+        Object.entries(searchimizationData.profile).forEach(([key, value]) => {
+          if (typeof value === 'number') {
+            if (key.endsWith('P') || key.endsWith('F')) {
+              updateData[key] = (userData[key] || 0) + value;
+            }
+          }
         });
 
+        // Update the document with incremented values
+        if (searchmizationData.sessionplays > 0)
+        {
+        await updateDoc(userDocRef, updateData);
+        }
         // Remove the searchimization data from local storage
         localStorage.removeItem('searchimization');
 

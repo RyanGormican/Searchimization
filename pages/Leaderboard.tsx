@@ -28,37 +28,53 @@ const Leaderboard: React.FC = () => {
   // Fetch leaderboard data when mounted
   useEffect(() => {
   // Update local session values for user
-    const updateSessionValues = async () => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return;
+   const updateSessionValues = async () => {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return;
 
-    const userId = currentUser.uid;
-    const userDocRef = doc(firestore, 'users', userId);
+  const userId = currentUser.uid;
+  const userDocRef = doc(firestore, 'users', userId);
 
-    const userDocSnap = await getDoc(userDocRef);
+  const userDocSnap = await getDoc(userDocRef);
 
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
-      const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-      const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+  if (userDocSnap.exists()) {
+    const userData = userDocSnap.data();
+    const searchimizationData: SearchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+    const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
 
-      const newTotalplays = (userData.totalplays || 0) + sessionplays;
-      const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+    let newTotalplays = (userData.totalplays || 0) + sessionplays;
+    let newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
 
-      // Update the document with incremented values
-      await updateDoc(userDocRef, {
-        totalplays: newTotalplays,
-        totalfinishes: newTotalfinishes
-      });
+    // Prepare the update data
+    const updateData: { [key: string]: any } = {
+      totalplays: newTotalplays,
+      totalfinishes: newTotalfinishes
+    };
 
-          // Update local storage 
-      searchimizationData.profile.sessionplays = 0;
-      searchimizationData.profile.sessionfinishes = 0;
-      searchimizationData.profile.totalfinishes = newTotalfinishes;
-      searchimizationData.profile.totalplays = newTotalplays;
-      localStorage.setItem('searchimization', JSON.stringify(searchimizationData));
+    // Add values ending with 'P' or 'F' to update data and reset them to 0
+    Object.entries(searchimizationData.profile).forEach(([key, value]) => {
+      if (typeof value === 'number') {
+        if (key.endsWith('P') || key.endsWith('F')) {
+          updateData[key] = (userData[key] || 0) + value;
+          searchimizationData.profile[key] = 0; // Reset to 0 after updating
+        }
+      }
+    });
+
+    // Update the document with incremented values
+    if (    searchimizationData.profile.sessionplays > 0)
+    {
+    await updateDoc(userDocRef, updateData);
     }
-  };
+    // Reset session values in local storage
+    searchimizationData.profile.sessionplays = 0;
+    searchimizationData.profile.sessionfinishes = 0;
+    searchimizationData.profile.totalfinishes = newTotalfinishes;
+    searchimizationData.profile.totalplays = newTotalplays;
+    localStorage.setItem('searchimization', JSON.stringify(searchimizationData));
+  }
+};
+
 
     const fetchLeaderboard = async () => {
       const leaderboardRef = collection(firestore, 'users');
@@ -67,7 +83,6 @@ const Leaderboard: React.FC = () => {
       const leaderboardData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as LeaderboardUser));
       setLeaderboard(leaderboardData);
     };
-    
     updateSessionValues();
     fetchLeaderboard();
   }, []);

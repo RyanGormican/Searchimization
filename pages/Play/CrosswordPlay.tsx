@@ -148,9 +148,9 @@ const calculateGroupings = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
+
             {groupings && groupings?.length > 0 && (
-              <div>
+                     <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
               {groupings?.map(({ group, description }, index) => {
                 if (group && group.startsWith("Across")) {
                   return (
@@ -166,14 +166,14 @@ const calculateGroupings = () => {
                 }
                 return null;
               })}
-              </div>
-              )}
             </tbody>
+              )}
+     
           </table>
         </div>
-        <div className="grid grid-cols-10 grid-rows-10 gap-4">
+   
             {guessGrid && guessGrid?.length > 0 && (
-            <div>
+   <div className="grid grid-cols-10 grid-rows-10 gap-4">
           {guessGrid?.map((gridItem, index) => (
             <div
       key={index}
@@ -210,7 +210,7 @@ const calculateGroupings = () => {
           ))}
           </div>
           )}
-        </div>
+
         <div className="ml-4 flex-grow">
           {/* Table for Down groupings */}
           <h2>Down Groupings</h2>
@@ -225,9 +225,9 @@ const calculateGroupings = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
+       
                 {groupings && groupings?.length > 0 && (
-                <div>
+                   <tbody className="text-gray-600 text-sm font-light" style={{ border: "1px solid black" }}>
               {groupings?.map(({ group, description }, index) => {
                 if (group && group.startsWith("Down")) {
                   return (
@@ -243,9 +243,9 @@ const calculateGroupings = () => {
                 }
                 return null;
               })}
-              </div>
+                        </tbody>
               )}
-            </tbody>
+         
           </table>
         </div>
       </div>

@@ -105,7 +105,7 @@ setGridContent(newGridContent as GridContentItem[]);
             className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mr-4"
             onClick={() => handlePuzzleTypeClick('crossword')}
           >
-           CROSSWORD (WIP)
+           CROSSWORD
           </button>
         </div>
       )}

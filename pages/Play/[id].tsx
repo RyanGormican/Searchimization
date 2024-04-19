@@ -83,7 +83,8 @@ const searchimizationData = JSON.parse(localStorage.getItem('searchimization') |
         setFastTimes(updatedFastTimes);
          const updatedProfile = {
               ...searchimizationData.profile,
-              sessionfinishes: (searchimizationData.profile.sessionfinishes || 0) + 1
+              sessionfinishes: (searchimizationData.profile.sessionfinishes || 0) + 1,
+              [`${puzzleData.type}F`]: (searchimizationData.profile[`${puzzleData.type}F`] || 0) + 1,
             };
             localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
       } else
@@ -116,7 +117,8 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
         setGridContent(puzzleFromStorage.gridContent); 
             const updatedProfile = {
               ...searchimizationData.profile,
-              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1
+              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1,
+              [`${puzzleFromStorage.profile.type}P`]: (searchimizationData.profile[`${puzzleFromStorage.profile.type}P`] || 0) + 1
             };
             localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
@@ -143,7 +145,8 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
     localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
         const updatedProfile = {
               ...searchimizationData.profile,
-              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1
+              sessionplays: (searchimizationData.profile.sessionplays || 0) + 1,
+              [`${puzzleData.type}P`]: (searchimizationData.profile[`${puzzleData.type}P`] || 0) + 1
             };
             localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
