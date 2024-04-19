@@ -166,7 +166,7 @@ const maxGroup = type && type.type === 'crossword' ? theme.groupings.length : Ma
 
   // Effect to stop the timer when all words are found
   useEffect(() => {
-    if (type&&type.type === 'wordsearch' && foundWords > 0 && foundWords === maxGroup) {
+    if (foundWords > 0 && foundWords === maxGroup) {
       stopTimer();
     }
   }, [foundWords]);
