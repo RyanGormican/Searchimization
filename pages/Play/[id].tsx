@@ -5,6 +5,7 @@ import { auth, firestore } from '../../src/app/firebase';
 import Header from '../../src/app/Header';
 import '/src/app/globals.css';
 import WordSearchPlay from './WordSearchPlay';
+import CrosswordPlay from './CrosswordPlay';
 // Define interfaces for grid items and puzzle data
 interface GridItem {
   letter: string;
@@ -154,7 +155,8 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
 
  
   // Calculate maximum group number
-  const maxGroup = Math.max(...gridContent.map(item => item.group));
+const maxGroup = type && type.type === 'crossword' ? theme.groupings.length : Math.max(...gridContent.map(item => item.group));
+
 
   // Effect to fetch puzzle data and start the timer on component mount
   useEffect(() => {
@@ -179,7 +181,9 @@ const puzzleFromStorage = searchimizationData.entries.find((entry: Searchimizati
       {type && type.type === 'wordsearch' && (
        <WordSearchPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}/>
       )}
-     
+      {type && type.type === 'crossword' && (
+       <CrosswordPlay gridContent={gridContent} foundWords={foundWords} setFoundWords={setFoundWords} maxGroup={maxGroup} gridRef={gridRef} foundIndexes={foundIndexes} setFoundIndexes={setFoundIndexes}   groupings={theme && theme.groupings}/>
+      )}
     </div>
   </main>
 );
