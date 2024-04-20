@@ -187,7 +187,7 @@ const calculateGroupings = () => {
         minWidth: "20px"
       }}
     >
-              {editingIndex === index ? (
+              {editingIndex === index &&  gridContent[index]?.letter != gridItem.letter  ? (
                 <input
                   type="text"
                   value={gridItem.letter}
