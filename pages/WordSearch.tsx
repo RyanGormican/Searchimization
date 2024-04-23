@@ -1,6 +1,8 @@
 import '/src/app/globals.css';
 import React, { useState, useRef, useEffect } from 'react';
 import {uploadPuzzle} from './Create';
+import { Icon } from '@iconify/react';
+import HelpModal from '../src/app/HelpModal';
 interface GridContentItem {
   letter: string;
   group: number;
@@ -41,8 +43,8 @@ const WordSearch = ({
 
   // State for selected letters
   const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
-
-
+  // State for Modal
+    const [helpModal, setHelpModal] = useState(false);
 
   // Calculate groupings
   useEffect(() => {
@@ -160,7 +162,10 @@ const calculateGroupings = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-    
+     <Icon icon="ph:question" width="30" onClick={() => setHelpModal(!helpModal)} />
+   {helpModal &&
+   <HelpModal type="WordSearchCreate" setHelpModal={setHelpModal} helpModal={helpModal}/>
+   }
       <div style={{ minHeight: "50px", maxHeight: "50px" }}>
         {selectedLetters?.length > 0 && (
           <div>

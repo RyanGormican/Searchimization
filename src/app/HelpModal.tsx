@@ -32,6 +32,19 @@ const HelpModal: React.FC<HelpModalProps> = ({ type, helpModal, setHelpModal }) 
                     <p>Step 4: When you are done, click the 'Upload' button to save your crossword.</p>
                   </div>
                 )}
+                {type === 'WordSearchCreate' && (
+  <div className="text-center">
+    <h1 className="text-xl font-semibold mb-4">Word Search Creation Help</h1>
+    <p className="text-gray-700">Here are instructions on how to create your word search:</p>
+
+    <p>Step 1: Start by entering the name of your word search in the input field at the top.</p>
+    <p>Step 2: Click on each grid cell to input letters. These will form the letters in your word search puzzle.</p>
+    <p>Step 3: Click the 'Add Group' button to create new groups of letters. Use the color picker to create highlights to detonate which letters belong to a group</p>
+    <p>Step 4: Click on a group to select it. Once selected, click the letters in the order you need to spell the word. Hit the submit button when you are finished to set the letters to the grouping</p>
+    <p>Step 5: Once you've completed your word search, click the 'Upload' button to save your puzzle.</p>
+  </div>
+)}
+
               </div>
             </div>
           </div>

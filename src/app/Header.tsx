@@ -22,6 +22,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [name, setName] = useState<string>('');
   const [suggestion, setSuggestion] = useState<string>('');
+
 const handleLogout = async () => {
   try {
     const currentUser = auth.currentUser;
