@@ -21,18 +21,17 @@ const HelpModal: React.FC<HelpModalProps> = ({ type, helpModal, setHelpModal }) 
                 </button>
               </div>
               <div className="p-4 md:p-5 space-y-4">
-             {type ==='CrosswordCreate' && ( 
-            <div className="text-center">
+                {type === 'CrosswordCreate' && (
+                  <div className="text-center">
                     <h1 className="text-xl font-semibold mb-4">Crossword Creation Help</h1>
-                    <p className="text-gray-700">Here are  instructions on how to create your crossword:</p>
-         
-                      <p>Step 1: Start by entering the name of your crossword at the top input that says 'My Puzzle'.</p>
-                      <p>Step 2: Click on each grid cell to input letters. Words are thrown into across and down catagories at >=3 characters.</p>
-                      <p>Step 3: Using the left and right tables for across and down, edit the description input boxes to write clues for your words.</p>
-                      <p>Step 4: When you are done, click the 'Upload' button to save your crossword.</p>
-           
+                    <p className="text-gray-700">Here are instructions on how to create your crossword:</p>
+
+                    <p>Step 1: Start by entering the name of your crossword at the top input that says 'My Puzzle'.</p>
+                    <p>Step 2: Click on each grid cell to input letters. Words are thrown into across and down categories at &gt;=3 characters.</p>
+                    <p>Step 3: Using the left and right tables for across and down, edit the description input boxes to write clues for your words.</p>
+                    <p>Step 4: When you are done, click the 'Upload' button to save your crossword.</p>
                   </div>
-             )}
+                )}
               </div>
             </div>
           </div>
