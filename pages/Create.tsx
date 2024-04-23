@@ -87,29 +87,54 @@ setGridContent(newGridContent as GridContentItem[]);
     <main className="flex min-h-screen items-center p-12 flex-col">
       <Header currentUser={currentUser} />
 
-      {createState === null && (
-        <div className="flex">
-          <button
-            className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mr-4"
-            onClick={() => handlePuzzleTypeClick('wordsearch')}
-          >
-            WORD SEARCH
-            <div className="grid grid-cols-6 grid-rows-8 mt-4">
-                {Array.from({ length: 48 }).map((_, index) => (
-                  <div key={index} className="flex justify-center items-center w-10 h-10 border border-gray-300">
-                    A
-                  </div>
-                ))}
-              </div>
-          </button>
-          <button
-            className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mr-4"
-            onClick={() => handlePuzzleTypeClick('crossword')}
-          >
-           CROSSWORD
-          </button>
+    {createState === null && (
+    <div className="flex flex-col items-center">
+      <button
+        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
+        onClick={() => handlePuzzleTypeClick('wordsearch')}
+      >
+        <div className="flex items-center">
+          <Icon icon="lucide:text-search" width="20" />
+          <span className="ml-2">WORD SEARCH</span>
+          <Icon icon="lucide:text-search" width="20" />
         </div>
-      )}
+        <p className="text-sm text-white-600 mt-2">Find hidden words in a grid of letters!</p>
+      </button>
+      <button
+        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
+        onClick={() => handlePuzzleTypeClick('crossword')}
+      >
+        <div className="flex items-center">
+          <Icon icon="material-symbols:crossword" width="20" />
+          <span className="ml-2">CROSSWORD</span>
+          <Icon icon="material-symbols:crossword" width="20" />
+        </div>
+        <p className="text-sm text-white-600 mt-2">Solve clues to fill in the grid and complete the puzzle!</p>
+      </button>
+      <button
+        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
+        onClick={() => handlePuzzleTypeClick('unions')}
+      >
+        <div className="flex items-center">
+          <Icon icon="fe:union" width="20" />
+          <span className="ml-2">UNIONS (WIP)</span>
+          <Icon icon="fe:union" width="20" />
+        </div>
+        <p className="text-sm text-white-600 mt-2">Determine groupings within a set of words!</p>
+      </button>
+      <button
+        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
+        onClick={() => handlePuzzleTypeClick('nonogram')}
+      >
+        <div className="flex items-center">
+          <Icon icon="mdi:paint-outline" width="20" />
+          <span className="ml-2">NONOGRAM (WIP)</span>
+          <Icon icon="mdi:paint-outline" width="20" />
+        </div>
+        <p className="text-sm text-white-600 mt-2">Paint cells to reveal a picture!</p>
+      </button>
+    </div>
+  )}
       {createState!== null && (
     <Icon icon="streamline:return-2" width="30" onClick={() => setCreateState(null)} />
     )}

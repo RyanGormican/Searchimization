@@ -109,7 +109,7 @@ const handleLogout = async () => {
   return (
     <header className="flex justify-between items-center p-12 flex-col">
       <Link href="/Home">
-        <div className="text-3xl font-bold mb-4 title">Searchimization</div>
+        <div className="text-6xl font-bold mb-4 title">Searchimization</div>
       </Link>
       <div className="links">
         <a href="https://www.linkedin.com/in/ryangormican/">
@@ -129,21 +129,21 @@ const handleLogout = async () => {
       <div className="flex">
         <div>
             <Link href="/Puzzles">
-              <button className="py-2 px-2 bg-blue-500 text-white rounded">PUZZLES</button>
+              <button className="py-3 px-3 bg-blue-500 text-white border border-white">PUZZLES</button>
             </Link>
       </div>
             <div>
             <Link href="/Leaderboard">
-              <button className="py-2 px-2 bg-blue-500 text-white rounded">LEADERBOARD</button>
+              <button className="py-3 px-3 bg-blue-500 text-white border border-white">LEADERBOARD</button>
             </Link>
       </div>
         {currentUser && (
           <div>
             <Link href="/Create">
-              <button className="py-2 px-2 bg-blue-500 text-white rounded">CREATE</button>
+              <button className="py-3 px-3 bg-blue-500 text-white border border-white">CREATE</button>
             </Link>
             <Link href="/Profile">
-              <button className="py-2 px-2 bg-blue-500 text-white rounded">PROFILE</button>
+              <button className="py-3 px-3 bg-blue-500 text-white border border-white">PROFILE</button>
             </Link>
             <div className="logout">
               <Icon onClick={handleLogout} icon="material-symbols:logout" height="60" />
