@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { uploadPuzzle } from './Create';
-
+import { Icon } from '@iconify/react';
+import HelpModal from '../src/app/HelpModal';
 interface GridContentItem {
   letter: string;
   group: number;
@@ -30,6 +31,7 @@ const Crossword: React.FC<Props> = ({
 }: Props) => {
   // State for currently editing index
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [helpModal, setHelpModal] = useState(false);
 
   // State for groupings
   const [groupings, setGroupings] = useState<{ group: string | null; letters: string; description: string; startIndex: number; endIndex: number }[]>([]);
@@ -145,13 +147,14 @@ const calculateGroupings = () => {
   };
 
   // Input change handler for grid cells
-  const handleInputChange = (index: number, newLetter: string) => {
-    setGridContent((prevGridContent) => {
-      const newGridContent = [...prevGridContent];
-      newGridContent[index].letter = newLetter.toUpperCase();
-      return newGridContent;
-    });
-  };
+const handleInputChange = (index: number, newLetter: string) => {
+  setGridContent((prevGridContent) => {
+    const newGridContent = [...prevGridContent];
+    const uppercaseLetter = newLetter.toUpperCase();
+    newGridContent[index].letter = uppercaseLetter;
+    return newGridContent;
+  });
+};
 
   // Blur handler for grid cells
   const handleInputBlur = (index: number) => {
@@ -170,8 +173,12 @@ const calculateGroupings = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+   <Icon icon="ph:question" width="30" onClick={() => setHelpModal(!helpModal)} />
+   {helpModal &&
+   <HelpModal type="CrosswordCreate" setHelpModal={setHelpModal} helpModal={helpModal}/>
+   }
       <div className="flex mt-4">
-        <div className="ml-4 flex-grow">
+        <div className="ml-4 flex-grow mr-4">
           {/* Table for Across groupings */}
           <h2>Across Groupings</h2>
           <table className="min-w-max w-full table-auto" style={{ marginBottom: '20px' }}>
@@ -209,22 +216,28 @@ const calculateGroupings = () => {
             <div
               key={index}
               onClick={() => handleClick(index)}
+                style={{
+        border: "1px solid black",
+        textAlign: "center",
+         minWidth: "20px",
+        minHeight: "20px"
+      }}
             >
-              {editingIndex === index ? (
-                <input
-                  type="text"
-                  value={letter}
-                  maxLength={1}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  onBlur={() => handleInputBlur(index)}
-                  style={{ textTransform: 'uppercase' }}
-                  pattern="[A-Z]"
-                  onKeyPress={(e) => {
-                    const charCode = e.charCode;
-                    if (charCode < 65 || charCode > 90) {
-                      e.preventDefault();
-                    }
-                  }}
+           {editingIndex === index ? (
+  <input
+    type="text"
+    value={letter}
+    maxLength={1}
+    onChange={(e) => handleInputChange(index, e.target.value)}
+    onBlur={() => handleInputBlur(index)}
+    style={{ textTransform: 'uppercase' }}
+    pattern="[A-Za-z]|"
+    onKeyPress={(e) => {
+      const charCode = e.charCode;
+      if (!((charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || charCode === 0)) {
+        e.preventDefault();
+      }
+    }}
                 />
               ) : (
                 <div>{letter}</div>
@@ -232,7 +245,7 @@ const calculateGroupings = () => {
             </div>
           ))}
         </div>
-        <div className="ml-4 flex-grow">
+        <div className="ml-4 flex-grow mr-4">
           {/* Table for Down groupings */}
           <h2>Down Groupings</h2>
           <table className="min-w-max w-full table-auto" style={{ marginBottom: '20px' }}>

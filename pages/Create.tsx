@@ -70,7 +70,7 @@ setGridContent(newGridContent as GridContentItem[]);
     if (type === 'crossword'){    
 
 const newGridContent = Array.from({ length: 100 }, (_, index) => ({
-      letter: 'A',
+      letter: '',
       group: 1,
       position:1,
       index,

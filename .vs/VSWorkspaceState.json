@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\pages",
-    "\\pages\\Play"
+    "\\pages\\Play",
+    "\\src",
+    "\\src\\app"
   ],
-  "SelectedNode": "\\pages\\Play\\[id].tsx",
+  "SelectedNode": "\\pages\\Home.tsx",
   "PreviewInSolutionExplorer": false
 }
