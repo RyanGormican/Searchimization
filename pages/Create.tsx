@@ -7,6 +7,7 @@ import { collection, addDoc, updateDoc, doc,getDoc } from 'firebase/firestore';
 import Header from '../src/app/Header';
 import WordSearch from './WordSearch';
 import Crossword from './Crossword';
+import { Icon } from '@iconify/react';
 interface GridContentItem {
   letter: string;
   group: number;
@@ -109,7 +110,9 @@ setGridContent(newGridContent as GridContentItem[]);
           </button>
         </div>
       )}
-
+      {createState!== null && (
+    <Icon icon="streamline:return-2" width="30" onClick={() => setCreateState(null)} />
+    )}
       {createState === 'wordsearch' && (
         <WordSearch name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} setName={setName} />
       )}
