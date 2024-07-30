@@ -12,6 +12,6 @@ import { getFirestore } from "firebase/firestore";
 
 
 
-const app2 = initializeApp(firebaseConfig);
+const app2 = initializeApp(firebaseConfig, "app2");
 const firestore2 = getFirestore(app2); 
 export { app2, firestore2};
