@@ -80,6 +80,7 @@ const newGridContent = Array.from({ length: 100 }, (_, index) => ({
 setGridContent(newGridContent as GridContentItem[]);
 
     }
+      
   setCreateState(type);
 };
 
@@ -95,7 +96,7 @@ setGridContent(newGridContent as GridContentItem[]);
       >
         <div className="flex items-center">
           <Icon icon="lucide:text-search" width="20" />
-          <span className="ml-2">WORD SEARCH</span>
+          <span>WORD SEARCH</span>
           <Icon icon="lucide:text-search" width="20" />
         </div>
         <p className="text-sm text-white-600 mt-2">Find hidden words in a grid of letters!</p>
@@ -106,33 +107,13 @@ setGridContent(newGridContent as GridContentItem[]);
       >
         <div className="flex items-center">
           <Icon icon="material-symbols:crossword" width="20" />
-          <span className="ml-2">CROSSWORD</span>
+          <span>CROSSWORD</span>
           <Icon icon="material-symbols:crossword" width="20" />
         </div>
         <p className="text-sm text-white-600 mt-2">Solve clues to fill in the grid and complete the puzzle!</p>
       </button>
-      <button
-        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
-        onClick={() => handlePuzzleTypeClick('unions')}
-      >
-        <div className="flex items-center">
-          <Icon icon="fe:union" width="20" />
-          <span className="ml-2">UNIONS (WIP)</span>
-          <Icon icon="fe:union" width="20" />
-        </div>
-        <p className="text-sm text-white-600 mt-2">Determine groupings within a set of words!</p>
-      </button>
-      <button
-        className="py-6 px-12 bg-blue-500 hover:bg-blue-700 text-white rounded-lg text-2xl mb-4 flex flex-col items-center"
-        onClick={() => handlePuzzleTypeClick('nonogram')}
-      >
-        <div className="flex items-center">
-          <Icon icon="mdi:paint-outline" width="20" />
-          <span className="ml-2">NONOGRAM (WIP)</span>
-          <Icon icon="mdi:paint-outline" width="20" />
-        </div>
-        <p className="text-sm text-white-600 mt-2">Paint cells to reveal a picture!</p>
-      </button>
+    
+     
     </div>
   )}
       {createState!== null && (
@@ -145,6 +126,7 @@ setGridContent(newGridContent as GridContentItem[]);
       {createState === 'crossword' && (
     <Crossword name={name} gridContent={gridContent} gridRef={gridRef} setGridContent={setGridContent} username={username} createState={createState} setName={setName} />
       )}
+    
     </main>
   );
 };
