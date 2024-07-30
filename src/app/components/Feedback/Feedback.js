@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { firestore } from './firebaseConfig';
+import { firestore2 } from './firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Feedback = ({ isModalOpen, setIsModalOpen }) => {
@@ -10,7 +10,7 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(firestore, 'suggestions'), {
+      await addDoc(collection(firestore2, 'suggestions'), {
         name: name.trim(),
         topic: 'Searchimization',
         suggestion: suggestion.trim(),
@@ -25,7 +25,7 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
   };
   const handleProjectClick = async () => {
     try {
-      const docRef = await addDoc(collection(firestore, 'feedback'), {
+      const docRef = await addDoc(collection(firestore2, 'feedback'), {
         project: 'Searchimization',
         timestamp: serverTimestamp()
       });
