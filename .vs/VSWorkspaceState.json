@@ -3,9 +3,12 @@
     "",
     "\\pages",
     "\\pages\\Play",
+    "\\public",
     "\\src",
-    "\\src\\app"
+    "\\src\\app",
+    "\\src\\app\\components",
+    "\\src\\app\\components\\Feedback"
   ],
-  "SelectedNode": "\\pages\\Create.tsx",
+  "SelectedNode": "\\src\\app\\components\\Feedback\\Feedback.css",
   "PreviewInSolutionExplorer": false
 }
