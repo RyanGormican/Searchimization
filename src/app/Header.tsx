@@ -125,10 +125,15 @@ const handleLogout = async () => {
             <Link href="/Profile">
               <button className="py-3 px-3 bg-blue-500 text-white border border-white">PROFILE</button>
             </Link>
-            <div className="logout">
-              <Icon onClick={handleLogout} icon="material-symbols:logout" height="60" />
-            </div>
-          </div>
+           <div className="logout">
+  <button 
+    onClick={handleLogout} 
+    aria-label="Logout"
+  >
+    <Icon icon="material-symbols:logout" height="60" />
+  </button>
+</div>
+
         )}
       </div>
 
