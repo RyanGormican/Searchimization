@@ -4,87 +4,64 @@ import { Icon } from '@iconify/react';
 import { signOut } from 'firebase/auth';
 import { auth, firestore } from './firebase';
 import { User } from 'firebase/auth';
-import { collection, addDoc, getDoc, updateDoc, doc } from 'firebase/firestore';
+import { getDoc, updateDoc, doc } from 'firebase/firestore';
 import Feedback from './components/Feedback/Feedback';
-
-interface Feedback {
-  name: string;
-  suggestion: string;
-  time: string;
-  resolved: boolean;
-}
 
 interface HeaderProps {
   currentUser: User | null;
 }
 
 const Header: React.FC<HeaderProps> = ({ currentUser }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-     const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState<string>('');
-  const [suggestion, setSuggestion] = useState<string>('');
+  const handleLogout = async () => {
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userId = currentUser.uid;
+        const userDocRef = doc(firestore, 'users', userId);
 
-const handleLogout = async () => {
-  try {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      const userId = currentUser.uid;
-      const userDocRef = doc(firestore, 'users', userId);
-      
-      // Get the document snapshot
-      const userDocSnap = await getDoc(userDocRef);
-      
-      // If the document exists, update the totalplays and totalfinishes
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        
-        // Retrieve totalplays and totalfinishes from local storage
-        const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-        const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+        // Get the document snapshot
+        const userDocSnap = await getDoc(userDocRef);
 
-        // Calculate new totalplays and totalfinishes
-        const newTotalplays = (userData.totalplays || 0) + sessionplays;
-        const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+          const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
 
-        // Prepare update data
-         const updateData: { [key: string]: any } = {
-          totalplays: newTotalplays,
-          totalfinishes: newTotalfinishes
-        };
+          const newTotalplays = (userData.totalplays || 0) + sessionplays;
+          const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
 
-        // Add values ending with 'P' or 'F' to update data 
-        Object.entries(searchimizationData.profile).forEach(([key, value]) => {
-          if (typeof value === 'number') {
-            if (key.endsWith('P') || key.endsWith('F')) {
-              updateData[key] = (userData[key] || 0) + value;
+          const updateData: { [key: string]: any } = {
+            totalplays: newTotalplays,
+            totalfinishes: newTotalfinishes,
+          };
+
+          Object.entries(searchimizationData.profile).forEach(([key, value]) => {
+            if (typeof value === 'number') {
+              if (key.endsWith('P') || key.endsWith('F')) {
+                updateData[key] = (userData[key] || 0) + value;
+              }
             }
+          });
+
+          if (searchimizationData.sessionplays > 0) {
+            await updateDoc(userDocRef, updateData);
           }
-        });
 
-        // Update the document with incremented values
-        if (searchimizationData.sessionplays > 0)
-        {
-        await updateDoc(userDocRef, updateData);
+          localStorage.removeItem('searchimization');
+          await signOut(auth);
+          window.location.href = '/Home';
         }
-        // Remove the searchimization data from local storage
-        localStorage.removeItem('searchimization');
-
-        // Sign out the user
-        await signOut(auth);
-        window.location.href = '/Home';
       }
+    } catch (error) {
+      console.error('Error handling logout:', error);
     }
-  } catch (error) {
-    console.error('Error handling logout:', error);
-  }
-};
-
+  };
 
   const toggleFeedbackModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
-
 
   return (
     <header className="flex justify-between items-center p-12 flex-col">
@@ -102,21 +79,21 @@ const handleLogout = async () => {
           <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
         </a>
         <div className="cursor-pointer" onClick={toggleFeedbackModal}>
-          <Icon icon="material-symbols:feedback"  width="60" />
+          <Icon icon="material-symbols:feedback" width="60" />
         </div>
       </div>
-    
+
       <div className="flex">
         <div>
-            <Link href="/Puzzles">
-              <button className="py-3 px-3 bg-blue-500 text-white border border-white">PUZZLES</button>
-            </Link>
-      </div>
-            <div>
-            <Link href="/Leaderboard">
-              <button className="py-3 px-3 bg-blue-500 text-white border border-white">LEADERBOARD</button>
-            </Link>
-      </div>
+          <Link href="/Puzzles">
+            <button className="py-3 px-3 bg-blue-500 text-white border border-white">PUZZLES</button>
+          </Link>
+        </div>
+        <div>
+          <Link href="/Leaderboard">
+            <button className="py-3 px-3 bg-blue-500 text-white border border-white">LEADERBOARD</button>
+          </Link>
+        </div>
         {currentUser && (
           <div>
             <Link href="/Create">
@@ -125,21 +102,16 @@ const handleLogout = async () => {
             <Link href="/Profile">
               <button className="py-3 px-3 bg-blue-500 text-white border border-white">PROFILE</button>
             </Link>
-           <div className="logout">
-  <button 
-    onClick={handleLogout} 
-    aria-label="Logout"
-  >
-    <Icon icon="material-symbols:logout" height="60" />
-  </button>
-</div>
-
+            <div className="logout">
+              <button onClick={handleLogout} aria-label="Logout">
+                <Icon icon="material-symbols:logout" height="60" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
-     {isModalOpen && (
-          <Feedback  isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-          )}
+      {isModalOpen && <Feedback isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
     </header>
   );
 };
