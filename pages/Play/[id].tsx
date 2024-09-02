@@ -107,12 +107,12 @@ const fetchPuzzleData = async () => {
     if (!id) return;
 
     const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-    let puzzleData;
+    let puzzleData: PuzzleData | undefined;
 
     if (searchimizationData && searchimizationData.entries) {
       const puzzleFromStorage = searchimizationData.entries.find((entry: SearchimizationEntry) => entry.id === id);
       if (puzzleFromStorage) {
-        puzzleData = puzzleFromStorage;
+        puzzleData = puzzleFromStorage as PuzzleData;
       }
     }
 
@@ -121,7 +121,9 @@ const fetchPuzzleData = async () => {
       const puzzleDoc = await getDoc(puzzleDocRef);
       puzzleData = puzzleDoc.data() as PuzzleData;
 
-      const updatedEntries = searchimizationData.entries.map((entry: SearchimizationEntry) => entry.id === id ? puzzleData : entry);
+      const updatedEntries = searchimizationData.entries.map((entry: SearchimizationEntry) => 
+        entry.id === id ? puzzleData! : entry
+      );
       localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, entries: updatedEntries }));
     }
 
@@ -132,7 +134,7 @@ const fetchPuzzleData = async () => {
     const updatedProfile = {
       ...searchimizationData.profile,
       sessionplays: (searchimizationData.profile.sessionplays || 0) + 1,
-      [`${puzzleData?.type}P`]: (searchimizationData.profile[`${puzzleData?.type}P`] || 0) + 1
+      [`${puzzleData.type}P`]: (searchimizationData.profile[`${puzzleData.type}P`] || 0) + 1
     };
     localStorage.setItem('searchimization', JSON.stringify({ ...searchimizationData, profile: updatedProfile }));
 
