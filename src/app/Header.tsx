@@ -6,6 +6,7 @@ import { auth, firestore } from './firebase';
 import { User } from 'firebase/auth';
 import { getDoc, updateDoc, doc } from 'firebase/firestore';
 import Feedback from './components/Feedback/Feedback';
+import { useRouter } from 'next/router';
 
 interface HeaderProps {
   currentUser: User | null;
@@ -13,12 +14,14 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleLogout = async () => {
+    console.log('Logout button clicked');
     try {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const userId = currentUser.uid;
+      const firebaseUser = auth.currentUser;
+      if (firebaseUser) {
+        const userId = firebaseUser.uid;
         const userDocRef = doc(firestore, 'users', userId);
 
         // Get the document snapshot
@@ -51,11 +54,19 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
 
           localStorage.removeItem('searchimization');
           await signOut(auth);
-          window.location.href = '/Home';
+          router.push('/Home');
+        } else {
+          // If user document doesn't exist, still sign out
+          await signOut(auth);
+          router.push('/Home');
         }
+      } else {
+        // If no user is signed in, redirect to home
+        router.push('/Home');
       }
     } catch (error) {
       console.error('Error handling logout:', error);
+      alert('An error occurred during logout. Please try again.');
     }
   };
 
@@ -66,16 +77,16 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   return (
     <header className="flex justify-between items-center p-12 flex-col">
       <Link href="/Home">
-        <div className="text-6xl font-bold mb-4 title">Searchimization</div>
+        <div className="text-6xl font-bold mb-4 title cursor-pointer">Searchimization</div>
       </Link>
-      <div className="links">
-        <a href="https://www.linkedin.com/in/ryangormican/">
+      <div className="links flex space-x-4 mb-4">
+        <a href="https://www.linkedin.com/in/ryangormican/" target="_blank" rel="noopener noreferrer">
           <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
         </a>
-        <a href="https://github.com/RyanGormican/Searchimization">
+        <a href="https://github.com/RyanGormican/Searchimization" target="_blank" rel="noopener noreferrer">
           <Icon icon="mdi:github" color="#e8eaea" width="60" />
         </a>
-        <a href="https://ryangormicanportfoliohub.vercel.app/">
+        <a href="https://ryangormicanportfoliohub.vercel.app/" target="_blank" rel="noopener noreferrer">
           <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
         </a>
         <div className="cursor-pointer" onClick={toggleFeedbackModal}>
@@ -83,31 +94,30 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
         </div>
       </div>
 
-      <div className="flex">
-        <div>
-          <Link href="/Puzzles">
-            <button className="py-3 px-3 bg-blue-500 text-white border border-white">PUZZLES</button>
-          </Link>
-        </div>
-        <div>
-          <Link href="/Leaderboard">
-            <button className="py-3 px-3 bg-blue-500 text-white border border-white">LEADERBOARD</button>
-          </Link>
-        </div>
+      <div className="flex space-x-4">
+        <Link href="/Puzzles">
+          <button className="py-3 px-6 bg-blue-500 text-white border border-white rounded">PUZZLES</button>
+        </Link>
+        <Link href="/Leaderboard">
+          <button className="py-3 px-6 bg-blue-500 text-white border border-white rounded">LEADERBOARD</button>
+        </Link>
         {currentUser && (
-          <div>
+          <>
             <Link href="/Create">
-              <button className="py-3 px-3 bg-blue-500 text-white border border-white">CREATE</button>
+              <button className="py-3 px-6 bg-blue-500 text-white border border-white rounded">CREATE</button>
             </Link>
             <Link href="/Profile">
-              <button className="py-3 px-3 bg-blue-500 text-white border border-white">PROFILE</button>
+              <button className="py-3 px-6 bg-blue-500 text-white border border-white rounded">PROFILE</button>
             </Link>
-            <div className="logout">
-              <button onClick={handleLogout} aria-label="Logout">
-                <Icon icon="material-symbols:logout" height="60" />
-              </button>
-            </div>
-          </div>
+            <button
+              onClick={handleLogout}
+              aria-label="Logout"
+              className="py-3 px-6 bg-red-500 text-white border border-white rounded flex items-center"
+            >
+              <Icon icon="material-symbols:logout" height="24" width="24" />
+              <span className="ml-2">Logout</span>
+            </button>
+          </>
         )}
       </div>
 
