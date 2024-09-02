@@ -15,28 +15,29 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const userId = currentUser.uid;
-        const userDocRef = doc(firestore, 'users', userId);
+  try {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userId = currentUser.uid;
+      const userDocRef = doc(firestore, 'users', userId);
 
-        // Get the document snapshot
-        const userDocSnap = await getDoc(userDocRef);
+      // Get the document snapshot
+      const userDocSnap = await getDoc(userDocRef);
 
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
-          const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
+        const { sessionplays = 0, sessionfinishes = 0 } = searchimizationData.profile || {};
 
-          const newTotalplays = (userData.totalplays || 0) + sessionplays;
-          const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
+        const newTotalplays = (userData.totalplays || 0) + sessionplays;
+        const newTotalfinishes = (userData.totalfinishes || 0) + sessionfinishes;
 
-          const updateData: { [key: string]: any } = {
-            totalplays: newTotalplays,
-            totalfinishes: newTotalfinishes,
-          };
+        const updateData: { [key: string]: any } = {
+          totalplays: newTotalplays,
+          totalfinishes: newTotalfinishes,
+        };
 
+        if (searchimizationData.profile) {
           Object.entries(searchimizationData.profile).forEach(([key, value]) => {
             if (typeof value === 'number') {
               if (key.endsWith('P') || key.endsWith('F')) {
@@ -44,20 +45,22 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
               }
             }
           });
-
-          if (searchimizationData.sessionplays > 0) {
-            await updateDoc(userDocRef, updateData);
-          }
-
-          localStorage.removeItem('searchimization');
-          await signOut(auth);
-          window.location.href = '/Home';
         }
+
+        if (searchimizationData.sessionplays > 0) {
+          await updateDoc(userDocRef, updateData);
+        }
+
+        localStorage.removeItem('searchimization');
+        await signOut(auth);
+        window.location.href = '/Home';
       }
-    } catch (error) {
-      console.error('Error handling logout:', error);
     }
-  };
+  } catch (error) {
+    console.error('Error handling logout:', error);
+  }
+};
+
 
   const toggleFeedbackModal = () => {
     setIsModalOpen(!isModalOpen);
