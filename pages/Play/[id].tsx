@@ -106,7 +106,7 @@ const fetchPuzzleData = async () => {
   try {
     if (!id) return;
 
-    console.log("Fetching puzzle data for ID:", id);
+
 
     const searchimizationData = JSON.parse(localStorage.getItem('searchimization') || '{}');
     let puzzleData: PuzzleData | undefined;
@@ -133,15 +133,14 @@ const fetchPuzzleData = async () => {
     setType(puzzleData);
     setGridContent(puzzleData.gridContent);
 
-    console.log("Updating plays for ID:", id);
+ 
     const puzzleDocRef = doc(firestore, 'puzzles', id as string);
     await updateDoc(puzzleDocRef, {
       plays: increment(1),
       lastupdated: new Date().toISOString()
     });
 
-    console.log("Plays updated successfully");
-
+   
     const updatedProfile = {
       ...searchimizationData.profile,
       sessionplays: (searchimizationData.profile.sessionplays || 0) + 1,
