@@ -195,12 +195,12 @@ const calculateGroupings = () => {
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   onBlur={handleInputBlur}
                   style={{ textTransform: "uppercase", width: "100%", height: "100%", border: "none", textAlign: "center" }} 
-                  pattern="[A-Z]"
+                  pattern="[A-Za-z]|"
                   onKeyPress={(e) => {
                     const charCode = e.charCode;
-                    if (charCode < 65 || charCode > 90) {
-                      e.preventDefault();
-                    }
+                     if (!((charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || charCode === 0)) {
+        e.preventDefault();
+      }
                   }}
                 />
               ) : (
