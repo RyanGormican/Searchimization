@@ -18,6 +18,7 @@ interface Props {
   groupings: { group: string | null; letters: string; description: string; startIndex: number; endIndex: number }[];
 }
 
+
 const CrosswordPlay: React.FC<Props> = ({ gridContent, foundWords, setFoundWords, maxGroup, gridRef,  groupings }) => {
   // Define state for editing index and guessGrid
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
