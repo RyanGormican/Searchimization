@@ -39,7 +39,7 @@ const fetchPuzzles = async () => {
       puzzlesFromStorage = JSON.parse(storageData);
     } 
     if (!storageData){
- const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
+ const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc')));
 const puzzles = querySnapshot.docs.map((doc) => ({
   puzzleId: doc.id, 
   ...doc.data(),
@@ -50,7 +50,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
 
     if (puzzlesFromStorage && puzzlesFromStorage.entries.length === 0 ) {
       // If there are no entries in storage, fetch the latest 9 puzzles
-      const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc'), limit(9)));
+      const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), orderBy('timecreated', 'desc')));
 const puzzles = querySnapshot.docs.map((doc) => ({
   puzzleId: doc.id, 
   ...doc.data(),
@@ -64,7 +64,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
         // Find the latest lastupdated timestamp
         const latestLastUpdated = new Date(Math.max(...puzzlesFromStorage.entries.map(puzzle => new Date(puzzle.lastupdated).getTime()))).toISOString();
         
-        const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated), limit(9)));
+        const querySnapshot = await getDocs(query(collection(firestore, 'puzzles'), where('lastupdated', '>', latestLastUpdated)));
 
         const newPuzzles = querySnapshot.docs.map((doc) => ({
   puzzleId: doc.id, 
