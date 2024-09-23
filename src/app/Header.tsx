@@ -81,9 +81,9 @@ const Header: React.FC<HeaderProps> = ({ currentUser }) => {
         <a href="https://ryangormicanportfoliohub.vercel.app/">
           <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
         </a>
-        <div className="cursor-pointer" onClick={toggleFeedbackModal}>
-          <Icon icon="material-symbols:feedback" width="60" />
-        </div>
+       <div className="cursor-pointer" style={{ display: "none" }} onClick={toggleFeedbackModal}>
+  <Icon icon="material-symbols:feedback" width="60" />
+</div>
       </div>
 
       <div className="flex">
