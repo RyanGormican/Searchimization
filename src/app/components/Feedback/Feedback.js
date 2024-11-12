@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { firestore2 } from './firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-
+import './Feedback.css';
 const Feedback = ({ isModalOpen, setIsModalOpen }) => {
   const [name, setName] = useState('Anonymous');
   const [suggestion, setSuggestion] = useState('');
