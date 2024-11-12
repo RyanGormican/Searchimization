@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import { firestore2 } from './firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import './Feedback.css';
+
 const Feedback = ({ isModalOpen, setIsModalOpen }) => {
   const [name, setName] = useState('Anonymous');
   const [suggestion, setSuggestion] = useState('');
@@ -15,7 +16,7 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
         topic: 'Searchimization',
         suggestion: suggestion.trim(),
         timestamp: serverTimestamp(),
-        status: 'incomplete'
+        status: 'incomplete',
       });
       setName('Anonymous');
       setSuggestion('');
@@ -23,11 +24,12 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
       console.error('Error adding suggestion: ', error);
     }
   };
+
   const handleProjectClick = async () => {
     try {
-      const docRef = await addDoc(collection(firestore2, 'feedback'), {
+      await addDoc(collection(firestore2, 'feedback'), {
         project: 'Searchimization',
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
       });
     } catch (error) {
       console.error('Error adding document: ', error);
@@ -40,15 +42,14 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Feedback</h5>
-         
             <button type="button" className="close" onClick={() => setIsModalOpen(false)}>
               <Icon icon="mdi:close" width="24" />
             </button>
           </div>
           <div className="modal-body">
-             <button onClick={() => handleProjectClick()}>
-            Signal for Improvement
-          </button>
+            <button className="improvement-button" onClick={handleProjectClick}>
+              Signal for Improvement
+            </button>
             <h2>Leave a Suggestion</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -60,32 +61,27 @@ const Feedback = ({ isModalOpen, setIsModalOpen }) => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name (optional)"
-                  style={{ color: 'black' }}
+                  className="form-control"
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="suggestion">Suggestion</label>
-                <input
+                <textarea
                   id="suggestion"
-                  type="text"
                   name="suggestion"
                   value={suggestion}
                   onChange={(e) => setSuggestion(e.target.value)}
                   placeholder="Your suggestion"
                   required
-                  style={{ color: 'black' }}
+                  className="form-control"
                 />
               </div>
-              <button type="submit" style={{ backgroundColor: 'blue', color: 'white' }}>
+              <button type="submit" className="submit-button">
                 Submit
               </button>
             </form>
           </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>
-              Close
-            </button>
-          </div>
+        
         </div>
       </div>
     </div>
