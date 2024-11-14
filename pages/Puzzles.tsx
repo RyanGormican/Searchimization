@@ -86,7 +86,7 @@ const puzzles = querySnapshot.docs.map((doc) => ({
           });
 
           localStorage.setItem('searchimization', JSON.stringify({ ...puzzlesFromStorage, entries: updatedEntries }));
-          setPuzzleList(updatedEntries.slice(0, 9));
+          setPuzzleList(updatedEntries);
         } else {
           setPuzzleList(puzzlesFromStorage.entries);
         }
