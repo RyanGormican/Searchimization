@@ -21,6 +21,7 @@ interface Puzzle {
   fastTimes?: Array<{ time: number; username: string; userId: string }>; 
 }
 
+
 const Puzzles: React.FC = () => {
   const router = useRouter();
   const [puzzleList, setPuzzleList] = useState<Puzzle[]>([]);
